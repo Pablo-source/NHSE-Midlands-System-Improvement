@@ -1,2 +1,6 @@
-Session 01
-Content
+Session 01 - Introduction to R and R Studio
+
+This first session includes a Isolides presentation with a general overview about R and R Studio. How to load R and R Studio, how to load data into R, basic data exploration using Dplyr and how to produce initial plots using GGPLOT2 package. 
+
+File 01-02: R Tuition session 01.Rmd (Markdown Isolides document)
+File 02-02: R-Tuition-session-01.html (HTML output document with the final presentaion discussed in our Team Meeting)
