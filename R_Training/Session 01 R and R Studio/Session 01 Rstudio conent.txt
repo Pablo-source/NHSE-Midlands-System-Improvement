@@ -1,0 +1,1 @@
+This is a initial Learning session about R and R Studio, how to load and navigate on different R Studio menus
