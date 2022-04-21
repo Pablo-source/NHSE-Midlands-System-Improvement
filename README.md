@@ -8,7 +8,7 @@ This repository will include two main ouptuts:
 3. Analytical products developed by the team such as R Markdown reports and Shiny apps
 4. R Team Learning materials 
 
-## R Training folder /**Session 01 - Introduction to R and R Studio - 22/03/2022 **
+## R Training folder /**Session 01 - Introduction to R and R Studio - 22/03/2022**
 - The first session was about R and R Studio, an introduction to how to install them and use the menus on the IDE
 - There are just two files produced for this first session: The Isoslides document and the HTML website it generates
 - The presentation slides can be run using R Studio
