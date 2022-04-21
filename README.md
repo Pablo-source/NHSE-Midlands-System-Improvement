@@ -1,7 +1,7 @@
 # RightCare_team
 R and Shiny projects related for RightCare team
 
-This repository will include two main ouptuts: 
+This repository will include four main file content types: 
 
 1. R scripts used by the Rightcare team to create reports in Markdown and Shiny
 2. Repository of commmon adhoc functions created by the team to use on a daily basics
