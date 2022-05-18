@@ -19,3 +19,10 @@ This repository will include four main file content types:
 - 1. R project that we will use to start and setup the session 
 - 2. The R scripts used to produce the R markdown and also the R scripts
 - 3. The final PDF outputs as the report students will obtain at the end of this session.  
+
+## R Training /**Session 03 - Relative paths - 25/05/2022**
+- Reference files by using top level directory of a file project to build file paths
+- Build robust project oriented workflows using HERE package
+- Use project-relative paths
+- Learn the basic principles of designing code for real-life apps running on production environments
+- The aim of this session is to learn how to create R scripts aimed to be used in a development environment 
