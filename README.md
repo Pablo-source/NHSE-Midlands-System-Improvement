@@ -25,4 +25,4 @@ This repository will include four main file content types:
 - Build robust project oriented workflows using HERE package
 - Use project-relative paths
 - Learn the basic principles of designing code for real-life apps running on production environments
-- The aim of this session is to learn how to create R scripts aimed to be used in a development environment 
+- The aim of this session is learning how to create robust R scripts
