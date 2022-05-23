@@ -26,3 +26,9 @@ This repository will include four main file content types:
 - Use project-relative paths
 - Learn the basic principles of designing code for real-life apps running on production environments
 - The aim of this session is learning how to create robust R scripts
+
+## R Training /**Session 04 - GGPLOT2 package - 01/06/2022**
+- GGPLOT2 is an open-source data visualization package for the statistial programming language R
+- It is an implementation of Lenand Wilkinson's Grammar of Graphics - a general scheme for data visualization
+- It breaks up graphs into semantic components such as sclaes and layers
+- Users tell ggplot2 how to map variables to asesthetics, what graphical primitives to use and the theme required for the plot
