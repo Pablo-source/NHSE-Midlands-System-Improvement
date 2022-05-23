@@ -1,0 +1,177 @@
+---
+title: "GGPLOT2 plots library"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+This is a R markdown document describing diffeernt plots that can be created using GGPLOT2 package. First we present how to create single line charts and then how to combine 
+
+
+```{r Load previous workspace,echo=TRUE}
+load("05 CLEANSED data sets nodups.RData")
+```
+
+#### SECION 01-03. STP. Linechart
+
+First set the list of metrics to use in our plots, health indicators for STP displayed below:
+
+```{r List STP indicators name, echo=TRUE}
+table(IMP_STP_NODUPS$Measure)
+```
+```{r Subset each indicator,echo=TRUE}
+  library(ggplot2)
+  library(dplyr)
+  Data_STP_PLOT1 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Cancers and Tumours (PBC 02) - Non-elective - Difference in admission rate (12 months to quarter end)")
+  Data_STP_PLOT2 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Cardiology - Echocardiography: Waiting list per 100,000 population")
+  Data_STP_PLOT3 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Cardiology (TFCs 320 and 321) - Outpatient - Difference in activity rate (12 months to quarter end)")
+  Data_STP_PLOT4 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Spinal surgery service (TFC 108) - Outpatient - Percentage of patients discharged after their first attendance") 
+  Data_STP_PLOT5 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Total: Percentage of waiting list patients waiting 6+ weeks") 
+                                                        
+  Data_STP_PLOT6 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Total: Waiting list per 100,000 population") 
+                                                                                                  
+Data_STP_PLOT7 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Trauma & orthopaedics (TFCs 110 & 214) - Outpatient - Percentage of patients discharged after their first attendance") 
+                                                                                                             Data_STP_PLOT8 <- IMP_STP_NODUPS %>% 
+    filter(Measure=="Trauma and Orthopaedic Service: Waiting list (incomplete pathways) per 100,000 population") 
+                                                                                                                
+                                                                                                                 
+  
+```
+### 01. Standard line charts for one STP 
+
+From the above data sets, we can filter for one metric, selecting Cancers and Tumours (PBC 02) - Non-elective - Difference in admission rate (12 months to quarter end) and also we can apply another filter to obtain just Linconshire STP data. We combine these two condition in the filter() statement using DPYR verbs.
+
+```{r Standard, line chart data, echo=TRUE}
+  PLOT01DATA <- IMP_STP_NODUPS %>% 
+                  select(Measure,OrgName,ReportingDate,Value) %>% 
+      filter(Measure=="Cancers and Tumours (PBC 02) - Non-elective - Difference in admission rate (12 months to quarter end)" &
+            OrgName == "Birmingham and Solihull STP")
+  PLOT01DATA
+```
+Now that we have a subset of variables, we can produce a standard Line-chart
+
+```{r Standard line chart, echo=TRUE}
+ library(ggplot2)
+  library(dplyr)
+  PLOT01  <- PLOT01DATA %>% 
+    ggplot(aes(x = ReportingDate, y = Value)) +
+    geom_line() +
+    ggtitle("Cancers and Tumours (PBC 02)") +
+    theme(plot.title = element_text(size = 10, face = "bold")) +
+    theme(legend.position="none")
+  PLOT01
+```
+We could add some color based on the metric name (this will be useful when combining several metrics in the next section). By adding an aesthetic element to geom_line() geom form, we add aes(color = OrgName)
+
+```{r Linechart incl colour, echo=TRUE}
+ library(ggplot2)
+  library(dplyr)
+  PLOT03   <- PLOT01DATA %>% 
+    ggplot(aes(x = ReportingDate, y = Value)) +
+    geom_line(aes(color = OrgName)) +
+    ggtitle("Cancers and Tumours (PBC 02)") +
+    theme(plot.title = element_text(size = 10, face = "bold")) +
+    theme(legend.position="none")
+  PLOT03
+```
+
+
+
+### 01. Facet wrap line_charts based on OrgName STP name
+
+We use ggplot() package to produce a facetted line chart, in ggplot2 each line of the script build a new layer in the plot to obtain the final output. 
+
+The first command ggplot(aes(x = ReprtinDate, y= Value)), just provides the variables used for the x and y axis. We need to add an extra function geom_line() to be able to draw our first plot. If we wanted to combine a line chart alongside a dot  one, we would only have to add geom_point() to the line below geom_line() 
+
+This demonstrates the building principle behind GGPLOT2, to combine all plots in a single image of facetted line_charts by STP, we then add the facet_wrap() function and we specify that we want to split the plots by STP, in this instance.
+
+```{r stp PLOT01_08 Cancers and Tumours (PBC 02) by orgname,echo=TRUE}
+# x = ReportingDate, y Value, facet_wrap (~OrgName) 
+ library(ggplot2)
+  library(dplyr)
+  PLOT04  <- Data_STP_PLOT1 %>% 
+    ggplot(aes(x = ReportingDate, y = Value)) +
+    geom_line() +
+    ggtitle("Cancers and Tumours (PBC 02) - Non-elective - Difference in admission rate (12 months to quarter end") +
+    theme(plot.title = element_text(size = 10, face = "bold")) +
+    facet_wrap(~OrgName) +
+    theme(legend.position="none")
+  PLOT04
+  
+ # ggsave(paste0("01 Facet_wrap_geom_line_STP","_",format(Sys.time(),"%Y-%m-%d_%H-%M"),".jpeg"),
+  ggsave(paste0("01 Facet_wrap_geom_line_STP","_",format(Sys.time(),"%Y-%m-%d"),".jpeg"),
+       width = 30, height = 20, dpi = 150, units = "cm")
+```
+### 02.Include colour for each plot 
+
+We can include colour in the above plots, by adding color parameter to geom_line() object as in the script below 
+
+
+```{r stp PLOT02_Colour ,echo=TRUE}
+# x = ReportingDate, y Value, facet_wrap (~OrgName) 
+ library(ggplot2)
+  library(dplyr)
+  PLOT04COLOR  <- Data_STP_PLOT2 %>% 
+                  ggplot(aes(x = ReportingDate, y = Value)) +
+                  ggtitle("Cardiology - Echocardiography: Waiting list per 100 000 population") +
+                  theme(plot.title = element_text(size = 10, face = "bold")) +
+                  geom_line(aes(color = OrgName)) +
+                  facet_wrap(~OrgName) +
+                  theme(legend.position="none")
+  PLOT04COLOR
+  
+  ggsave(paste0("02 Facet_wrap_geom_line_STP_COLOUR","_",format(Sys.time(),"%Y-%m-%d"),".jpeg"),
+         
+       width = 30, height = 20, dpi = 150, units = "cm")
+```
+### 03.Reduce Main plot Title size  
+
+We can tidy up the titles in the STP individual plots to make them fit on the same plot area
+
+```{r stp PLOT03_08 Cardiology Outpatients by orgname,echo=TRUE}
+# x = ReportingDate, y Value, facet_wrap (~OrgName) 
+ library(ggplot2)
+  library(dplyr)
+  PLOT05  <- Data_STP_PLOT3 %>% 
+    ggplot(aes(x = ReportingDate, y = Value)) +
+    ggtitle("Cardiology - Outpatient - Difference in activity rate (12 months to quarter end)R") +
+    theme(plot.title = element_text(size = 8, face = "plain")) +
+    geom_line(aes(color = OrgName)) +
+    facet_wrap(~OrgName) +
+    theme(legend.position="none")
+  PLOT05
+  
+  ggsave(paste0("03 Facet_wrap_geom_line_STP_Title","_",format(Sys.time(),"%Y-%m-%d"),".jpeg"),
+       width = 30, height = 20, dpi = 150, units = "cm")
+```
+### 04.Wrap up STP titles for each plot in two lines
+
+We can use labeller() function to display STP individual plot titles in two lines to avoid truncation: facet_wrap(~Orgname, labeller = label_wrap_gen(width = 20)) amd alsp we remove legend from plot using theme(legend.position = "none")
+
+
+```{r stp PLOT04_08 Spinal Surgery Service by orgname,echo=TRUE}
+# x = ReportingDate, y Value, facet_wrap (~OrgName) 
+ library(ggplot2)
+  library(dplyr)
+  PLOT06  <- Data_STP_PLOT4 %>% 
+    ggplot(aes(x = ReportingDate, y = Value)) +
+    ggtitle("Spinal surgery service (TFC 108) - Outpatient - Percentage of patients discharged after their first attendance") +
+    theme(plot.title = element_text(size = 10, face = "bold")) +
+       geom_line(aes(color = OrgName)) +
+    # Facet wrap_titles_in two lines
+    facet_wrap(~OrgName, labeller = label_wrap_gen(width = 20)) +
+    theme(legend.position="none")
+  PLOT06
+  
+  ggsave(paste0("04 Facet_wrap_geom_line_title_wrap","_",format(Sys.time(),"%Y-%m-%d"),".jpeg"),
+       width = 30, height = 20, dpi = 150, units = "cm")
+```
+
