@@ -1,5 +1,5 @@
 # RightCare_team
-R and Shiny projects related for RightCare team
+R  training session materials for RightCare team 
 
 This repository will include four main file content types: 
 
