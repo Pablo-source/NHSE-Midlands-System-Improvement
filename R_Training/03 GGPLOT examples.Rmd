@@ -6,14 +6,16 @@ output:
   pdf_document: default
 ---
 
-This is a R markdown document describing diffeernt plots that can be created using GGPLOT2 package. First we present how to create single line charts and then how to combine 
+This is a R markdown document describing diffeernt plots that can be created using GGPLOT2 package. First we present how to create single line charts and then how to combine.
+
+We start by loading a data set we created for the Improvement Dashboard project.  
 
 
 ```{r Load previous workspace,echo=TRUE}
 load("05 CLEANSED data sets nodups.RData")
 ```
 
-#### SECION 01-03. STP. Linechart
+## 01. Linecharts
 
 First set the list of metrics to use in our plots, health indicators for STP displayed below:
 
@@ -58,7 +60,7 @@ From the above data sets, we can filter for one metric, selecting Cancers and Tu
 ```
 Now that we have a subset of variables, we can produce a standard Line-chart
 
-```{r Standard line chart, echo=TRUE}
+```{r PLOT01 Standard line chart, echo=TRUE}
  library(ggplot2)
   library(dplyr)
   PLOT01  <- PLOT01DATA %>% 
@@ -71,16 +73,16 @@ Now that we have a subset of variables, we can produce a standard Line-chart
 ```
 We could add some color based on the metric name (this will be useful when combining several metrics in the next section). By adding an aesthetic element to geom_line() geom form, we add aes(color = OrgName)
 
-```{r Linechart incl colour, echo=TRUE}
+```{r PLOT02 Linechart incl colour, echo=TRUE}
  library(ggplot2)
   library(dplyr)
-  PLOT03   <- PLOT01DATA %>% 
+  PLOT02   <- PLOT01DATA %>% 
     ggplot(aes(x = ReportingDate, y = Value)) +
     geom_line(aes(color = OrgName)) +
     ggtitle("Cancers and Tumours (PBC 02)") +
     theme(plot.title = element_text(size = 10, face = "bold")) +
     theme(legend.position="none")
-  PLOT03
+  PLOT02
 ```
 
 
@@ -93,18 +95,18 @@ The first command ggplot(aes(x = ReprtinDate, y= Value)), just provides the vari
 
 This demonstrates the building principle behind GGPLOT2, to combine all plots in a single image of facetted line_charts by STP, we then add the facet_wrap() function and we specify that we want to split the plots by STP, in this instance.
 
-```{r stp PLOT01_08 Cancers and Tumours (PBC 02) by orgname,echo=TRUE}
+```{r stp PLOT03 Cancers and Tumours (PBC 02) by orgname,echo=TRUE}
 # x = ReportingDate, y Value, facet_wrap (~OrgName) 
  library(ggplot2)
   library(dplyr)
-  PLOT04  <- Data_STP_PLOT1 %>% 
+  PLOT03  <- Data_STP_PLOT1 %>% 
     ggplot(aes(x = ReportingDate, y = Value)) +
     geom_line() +
     ggtitle("Cancers and Tumours (PBC 02) - Non-elective - Difference in admission rate (12 months to quarter end") +
     theme(plot.title = element_text(size = 10, face = "bold")) +
     facet_wrap(~OrgName) +
     theme(legend.position="none")
-  PLOT04
+  PLOT03
   
  # ggsave(paste0("01 Facet_wrap_geom_line_STP","_",format(Sys.time(),"%Y-%m-%d_%H-%M"),".jpeg"),
   ggsave(paste0("01 Facet_wrap_geom_line_STP","_",format(Sys.time(),"%Y-%m-%d"),".jpeg"),
@@ -115,7 +117,7 @@ This demonstrates the building principle behind GGPLOT2, to combine all plots in
 We can include colour in the above plots, by adding color parameter to geom_line() object as in the script below 
 
 
-```{r stp PLOT02_Colour ,echo=TRUE}
+```{r stp PLOT04_Colour ,echo=TRUE}
 # x = ReportingDate, y Value, facet_wrap (~OrgName) 
  library(ggplot2)
   library(dplyr)
@@ -136,7 +138,7 @@ We can include colour in the above plots, by adding color parameter to geom_line
 
 We can tidy up the titles in the STP individual plots to make them fit on the same plot area
 
-```{r stp PLOT03_08 Cardiology Outpatients by orgname,echo=TRUE}
+```{r stp PLOT05 Cardiology Outpatients by orgname,echo=TRUE}
 # x = ReportingDate, y Value, facet_wrap (~OrgName) 
  library(ggplot2)
   library(dplyr)
@@ -157,7 +159,7 @@ We can tidy up the titles in the STP individual plots to make them fit on the sa
 We can use labeller() function to display STP individual plot titles in two lines to avoid truncation: facet_wrap(~Orgname, labeller = label_wrap_gen(width = 20)) amd alsp we remove legend from plot using theme(legend.position = "none")
 
 
-```{r stp PLOT04_08 Spinal Surgery Service by orgname,echo=TRUE}
+```{r stp PLOT06 Spinal Surgery Service by orgname,echo=TRUE}
 # x = ReportingDate, y Value, facet_wrap (~OrgName) 
  library(ggplot2)
   library(dplyr)
@@ -174,4 +176,74 @@ We can use labeller() function to display STP individual plot titles in two line
   ggsave(paste0("04 Facet_wrap_geom_line_title_wrap","_",format(Sys.time(),"%Y-%m-%d"),".jpeg"),
        width = 30, height = 20, dpi = 150, units = "cm")
 ```
+## 02. Boxplots
 
+In descriptive statistics, a box plot or boxplot is a method for graphically demonstrating the locality, spread and skewness groups of numerical data through their quartiles.[1] In addition to the box on a box plot, there can be lines (which are called whiskers) extending from the box indicating variability outside the upper and lower quartiles.
+
+```{r PLOT07 boxplots, echo=TRUE}
+ library(ggplot2)
+  library(dplyr)
+
+PLOT07  <- ggplot(Data_STP_PLOT4, aes(x=OrgName, y=Value, color=OrgName)) + 
+                  scale_y_continuous(breaks = seq(0,1000,by = 100))+
+                  ggtitle(paste0("Echocardiography: Waiting list *x100,000 by STP"))+
+                  theme(legend.position="none") +
+                  theme(plot.title = element_text(size = 10, face = "bold")) +
+                  coord_flip() +
+                  geom_boxplot()
+PLOT07
+
+  ggsave(paste0("05 Boxplot by STP","_",format(Sys.time(),"%Y-%m-%d"),".jpeg"), 
+       width = 30, height = 20, dpi = 150, units = "cm")
+```
+
+## 03. Bar charts
+
+A bar chart plots numeric values for levels of a categorical feature as bars. Levels are plotted on one axis, and values are plotted on the other axis. Categorical values are assigned to each bar, and its length corresponds to the bar's value.
+
+Bar charts are used to show a distribution of data points or to perform a metric values comparison among different subgroups of your data.
+
+```{r Bar charts data prep, echo=TRUE}
+ library(ggplot2)
+  library(dplyr)
+
+head(Data_STP_PLOT4)
+
+Metrics_list <-  Data_STP_PLOT4 %>% 
+                      select(Measure) %>% 
+                      distinct(Measure)
+Metrics_list
+
+Bar_plot_data <-Data_STP_PLOT4 %>% 
+                select(Measure,OrgName,Value,ReportingDate) %>% 
+                filter((Measure=="Spinal surgery service (TFC 108) - Outpatient - Percentage of patients discharged after their first attendance") &
+            OrgName == "Birmingham and Solihull STP")
+Bar_plot_data
+```
+
+Plot a bar chart using the code below
+
+```{r PLOT08 Bar charts, echo=TRUE}
+ library(ggplot2)
+  library(dplyr)
+
+PLOT08  <- ggplot(Data_STP_PLOT4, aes(x=ReportingDate, y=Value)) +
+  geom_bar (stat = "identity") +
+      ggtitle("Spinal surgery service (TFC 108) - Outpatient - by Date") 
+PLOT08  
+  
+```
+Sometimes the barplot might be difficult to read because of the long organisation names present on the data set. We can improve the view by swapping the axis turning it into  an horizontal barplot
+
+```{r PLOT09 Horizontal bar plot, echo=TRUE}
+ library(ggplot2)
+  library(dplyr)
+
+PLOT09  <- ggplot(Data_STP_PLOT4, aes(x=ReportingDate, y=Value)) +
+  geom_bar (stat = "identity",fill="steelblue") +
+      ggtitle("Spinal surgery service (TFC 108) - Outpatient - by Date") +
+   theme(plot.title = element_text(size = 10, face = "bold")) +
+      coord_flip()
+
+PLOT09  
+```
