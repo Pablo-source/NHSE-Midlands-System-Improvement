@@ -9,10 +9,10 @@ This repository will include four main file content types:
 4. R Team Learning materials 
 
 ## R Training /**Session 01 - Introduction to R and R Studio - 22/03/2022**
-- The first session was about R and R Studio, an introduction to how to install them and use the menus on the IDE
-- There are just two files produced for this first session: The Isoslides document and the HTML website it generates
+- The first session was about R and R Studio, an introduction to main menus and option in R Studio
+- There are just two files produced for this first session: An Isoslides presentation and HTML file it generates
 - The presentation slides can be run using R Studio
-- Final presentaion output will open on any web browser
+- It will open on any web browser
 
 ## R Training /**Session 02 - Loops in R - 27/04/2022**
 - This folder includes the whole set of materials to learn how to use loops
@@ -24,8 +24,8 @@ This repository will include four main file content types:
 - Reference files by using top level directory of a file project to build file paths
 - Build robust project oriented workflows using HERE package
 - Use project-relative paths
-- Learn the basic principles of designing code for real-life apps running on production environments
-- The aim of this session is learning how to create robust R scripts
+- Basic code design principles for real-life apps running on production environments
+- The aim of this session is to create robust R scripts
 
 ## R Training /**Session 04 - GGPLOT2 package - 01/06/2022**
 - GGPLOT2 is an open-source data visualization package for the statistial programming language R
