@@ -3,7 +3,7 @@ R  training session materials for NHSE Midlands System Improvement team
 
 This repository will include four main file content types: 
 
-1. R scripts used by the Rightcare team to create reports in Markdown and Shiny
+1. R scripts used by the NHSE Midlands System Improvement team to create reports in Markdown and Shiny
 2. Repository of commmon adhoc functions created by the team to use on a daily basics
 3. Analytical products developed by the team such as R Markdown reports and Shiny apps
 4. R Team Learning materials 
