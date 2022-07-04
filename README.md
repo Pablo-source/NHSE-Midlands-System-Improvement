@@ -1,4 +1,4 @@
-# RightCare_team
+# NHSE Midlands System Improvement
 R  training session materials for RightCare team 
 
 This repository will include four main file content types: 
