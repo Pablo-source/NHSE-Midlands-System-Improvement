@@ -1,0 +1,352 @@
+---
+title: "Replacing missing values"
+author: "PLR"
+date: "`r Sys.Date()`"
+output: 
+    html_document: 
+      toc: yes
+      toc_float: yes
+      toc_collaptse: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Intro to readxl package
+
+The readxl package makes it easy to get data out of Excel and into R. Compared to many of the existing packages (e.g. gdata, xlsx, xlsReadWrite) readxl has no external dependencies, so it’s easy to install and use on all operating systems. It is designed to work with tabular data.
+
+readxl supports both the legacy .xls format and the modern xml-based .xlsx format. The libxls C library is used to support .xls, which abstracts away many of the complexities of the underlying binary format. To parse .xlsx, we use the RapidXML C++ library.
+
+Check the package documentation from this website [readxl](https://readxl.tidyverse.org/)
+
+
+### Installation
+
+The easiest way to install the latest released version from CRAN is to install the whole tidyverse
+Then you can load it
+
+If the above doesn't work we can try to install just readxl package
+
+```{r install readxl package,echo=FALSE}
+# install.packages("readxl",dependencies = TRUE)
+library(readxl)
+library(writexl)
+library(here)
+```
+Important: we will use **readxl** package to read in  Excel files into R and **writexl** package to write out Excel files into R
+
+### List files in folder
+
+We might want to list the sheets on the Excel spreadsheet we just loaded into R
+```{r list files,echo=TRUE}
+list.files("data")
+```
+We have saved the .xlsx file into the data folder to be loaded into R
+
+### Display tab names from Excel file
+
+Prior to loading the Excel file into R, is it recommended to check number of tabs available in the file. We use excel_sheets() function for this. Just entering as argument the Excel file we will read into Excel. We can display the tabs on file **Sample_superstore_incomplete_cases.xlsx**
+
+
+```{r read in Excel into R, echo=TRUE}
+# Remember to check number of tabs in Excel file
+excel_sheets("data/Sample_superstore_incomplete_cases.xlsx")
+```
+This will help us to decide which tab we want to focus on. 
+
+### Prepare side ouptut for Incomplete Excel script
+
+#### Load Sheet1 tab to save it for incomplete Excel script
+
+We want first to extract data from from "Incomplete_dates_sales.xlsx" and then save it as an independent Excel file.
+
+```{r read in Jan data with fomats, echo=TRUE}
+Sales_chk <- read_excel(here("data","Sample_superstore_incomplete_cases.xlsx"),sheet = 1, skip = 0,range ="a1:u98",
+                      col_types = c("numeric"	,"text"	,"date","date",	"text",	"text"	,"text",	"text",	"text",	"text",	"text"	,"numeric",	"text",	"text",	"text",	"text"	,"text",	"numeric"	,"numeric",	"numeric"	,"numeric"))
+Sales_chk
+```
+
+#### Write out Sales dataframe as an Excel file
+
+We load the first tab containing the data and save it as Excel file called script named Sample_superstore_incomplete_cases_V2.xlsx using write_xlsx() function.
+
+```{r Write out Excel file, echo=TRUE}
+library(writexl)
+write_xlsx(Sales_chk,"data/Sample_superstore_incomplete_cases_V2.xlsx")
+```
+
+### **Read in data and replace missing values**
+
+### 1. Apply variable formats when loading data into R
+
+When loading initial data from Excel into R, we need to ensure that original variable values such as dates, character and numeric values are loaded into R with their initial format. We want to keep dates as dates and ensure that numbers are read as numbers and not character variables. 
+
+We use col_types() functions for that
+
+- It is recommended to list in col_types all relevant columns to be imported and assign the initial format from the Excel file: 
+
+- date : for date variables
+- text : for character variables
+- numeric: for numeric variables
+
+If we list all the columns we are interested in importing into R from Excel, and we assign thier relevant format, we will ensure the data loading is fone seamless into R. We need to provide for read_excel() function the above parameters for the col_types= argument. 
+
+```{r read in data with fomats, echo=TRUE}
+# This ensures that Date columns are passed into R as true date variables
+library(here)
+library(readxl)
+Sales <- read_excel(here("data","Sample_superstore_incomplete_cases.xlsx"),sheet = 1, skip = 0,range ="a1:u98",
+                      col_types = c("numeric"	,"text"	,"date","date",	"text",	"text"	,"text",	"text",	"text",	"text",	"text"	,"numeric",	"text",	"text",	"text",	"text"	,"text",	"numeric"	,"numeric",	"numeric"	,"numeric"))
+Sales
+```
+
+```{r check variabe names, echo=TRUE}
+names(Sales)
+```
+
+### 2. Subset data 
+
+We have a total of 21 different variables. For the purpose of this workbook let's restrict the number of variables to those containing most missing values
+
+```{r Subset data, echo=TRUE}
+library(dplyr)
+Sales_A <- Sales %>% 
+           select("Row_ID", "Order_ID", "Order_Date", "Ship_Date", "Ship_Mode", "Customer_ID",   "Customer_Name" ,"Segment","Country"  ,  "City",         
+"State" ,  "Postal_Code", "Region" ,"Sales")
+Sales_A
+```
+
+Note: Sometimes we might have dates when importing data from Excel as POSIX format, not in tihs instance, but we can transform them into Date format in R using this mutate statement *mutate(DATE = strptime(as.character(Order_Date), "%Y-%m-%d"))*
+
+```{r check_tabs,echo=TRUE}
+# 1.  Strip date from variable 
+# 2. Apply the required output format you want
+
+Sales_B <- Sales_A %>% 
+           mutate(
+             Year <- format(Order_Date, format="%Y"),
+             Month <- format(Order_Date, format="%m"),
+             Day <- format(Order_Date, format="%d")
+           )
+Sales_B
+```
+This is an example on how to extract date parts from Date variables, they are created as character variables that can then be turned into Date variables
+
+```{r}
+names(Sales_B)
+```
+
+
+```{r}
+Sales_B_detail <- Sales_B %>% 
+           select(Order_Date,
+                  Year = 'Year <- format(Order_Date, format = \"%Y\")',
+                  Month = 'Month <- format(Order_Date, format = \"%m\")',
+                  Day = 'Day <- format(Order_Date, format = \"%d\")' 
+           )
+  
+Sales_B_detail
+```
+
+### 3. Fill in Gaps using fill()  
+
+From Tidyr package, we will use funciton fill() to populate missing variable values with either **previous** or **next** value entry in the variable: [Tidyr] (https://tidyr.tidyverse.org/reference/fill.html)
+
+
+```{r Display first 20 rows or Order date variable}
+library(dplyr) 
+Order_date_missings <- Sales_B  %>% 
+                        print(n=20)
+```
+
+We use fill() function from tidyr package to fill in the gaps in the data frame. This fill verb has got the following parameters:
+
+verb: fill(data, direction = c("down","up","downup","updown))
+
+Arguments:
+
+- data : A data frame
+- fill(): defaults to replacing missing data from top to bottom
+- fill("**down**"): It replaces missing values from last available value to the bottom set of missing values. Direction to fill missing values is "down"
+- fill("**up**"): Direction to fill missing values is "up"
+- fill("**downup**"): Direction to fill missing values is first "down" and then "up"
+- fill("**updown**"): Direction to fill missing values is first "up" and then "down"
+
+### 3.1 Missing values in our dataframe
+
+From our previous dataset we susbset just a handufl of vaiables to use as an example
+
+```{r}
+Sales_C <-Sales_B %>% 
+         select(Row_ID,Order_ID,Order_Date,Ship_Date,Ship_Mode,Customer_ID,Customer_Name,Segment,Country, City, State, Postal_Code,Region,Sales)
+```
+
+
+First is convenient to check which variables include missing values when we load our data. 
+
+```{r Find missing values in your data,echo=TRUE}
+ sapply(Sales_C, function(x) sum(is.na(x)))
+```
+
+#### 3.1 Fill in missinv values for Order_Date variable
+
+We apply fill() function to Order_Date variable, this variable has just 6 records filled in at the top of the Excel file, and the last date available is 2014-06-09
+```{r fill in Order_Date missing values, echo=TRUE}
+library(tidyr)
+
+Fill_Order_Date <- Sales_B %>% fill(Order_Date)
+Fill_Order_Date
+```
+Now we can see how 'NA' values have been replaced, by displaying the first 20 rows of the data set. We could also have used  **fill("down")** as in most cases we will have the first record populated and then null values for consecutive rows. 
+
+```{r}
+library(dplyr) 
+Fill_Order_Date_chck <- Fill_Order_Date  %>% print(n=20)
+Fill_Order_Date_chck
+```
+
+#### 3.2 Fill in  missing values for Customer_Name variable
+
+We apply the same principle to populate Customer_Name missing values. Using last available records to fill in downwards missing values.
+
+```{r fill in Customer_Name missing values, echo=TRUE}
+library(tidyr)
+
+Fill_Customer_Name <- Sales_B %>% fill(Customer_Name)
+Fill_Customer_Name
+```
+
+
+#### 3.3 Fill in missing values for City variable
+
+We apply the same principle to populate City missing values.
+
+```{r fill in City missing values, echo=TRUE}
+library(tidyr)
+
+Fill_City <- Sales_B %>% fill(City)
+Fill_City
+```
+#### 3.4 Fill in missing values for Region variable
+
+We apply the same principle to populate Region missing values.
+
+```{r fill in Region missing values, echo=TRUE}
+library(tidyr)
+
+Fill_Region <- Sales_B %>% fill(Region)
+Fill_Region
+```
+
+
+### 4. Missing values replacement using different directions from package website 
+
+The following examples are from the tidyr original website: <https://tidyr.tidyverse.org/reference/fill.html>
+
+
+#### 4.1 Practical example where  Value (year) is recorded only when it changes
+
+In this particular example we using `fill()` defaults to replacing missing data from top to bottom
+
+```{r replace top to bottom missing values,echo=TRUE}
+sales <- tibble::tribble(
+  ~quarter, ~year, ~sales,
+  "Q1",    2000,    66013,
+  "Q2",      NA,    69182,
+  "Q3",      NA,    53175,
+  "Q4",      NA,    21001,
+  "Q1",    2001,    46036,
+  "Q2",      NA,    58842,
+  "Q3",      NA,    44568,
+  "Q4",      NA,    50197,
+  "Q1",    2002,    39113,
+  "Q2",      NA,    41668,
+  "Q3",      NA,    30144,
+  "Q4",      NA,    52897,
+  "Q1",    2004,    32129,
+  "Q2",      NA,    67686,
+  "Q3",      NA,    31768,
+  "Q4",      NA,    49094
+)
+sales
+```
+
+```{r}
+library(tidyr)
+sales %>% fill(year)
+```
+
+#### 4.2 Missing values above current variable values
+
+In the script below, we use a different direction this time "up" as an  alternative to "fill" action seing in the previous example 
+
+```{r replace missing values using "up", echo=TRUE}
+
+
+# Value (pet_type) is missing above
+tidy_pets <- tibble::tribble(
+  ~rank, ~pet_type, ~breed,
+  1L,        NA,    "Boston Terrier",
+  2L,        NA,    "Retrievers (Labrador)",
+  3L,        NA,    "Retrievers (Golden)",
+  4L,        NA,    "French Bulldogs",
+  5L,        NA,    "Bulldogs",
+  6L,     "Dog",    "Beagles",
+  1L,        NA,    "Persian",
+  2L,        NA,    "Maine Coon",
+  3L,        NA,    "Ragdoll",
+  4L,        NA,    "Exotic",
+  5L,        NA,    "Siamese",
+  6L,     "Cat",    "American Short"
+)
+tidy_pets
+```
+We replace all missing values in the above data set by using direction ="up"
+
+```{r replace all missing values using up direction, echo=TRUE}
+# For values that are missing above you can use `.direction = "up"`
+tidy_pets %>%
+  fill(pet_type, .direction = "up")
+```
+
+
+#### 4.3 Missing values above and below within a group
+
+```{r missing values above and below, echo=TRUE}
+# Value (n_squirrels) is missing
+squirrels <- tibble::tribble(
+  ~group,    ~name,     ~role,     ~n_squirrels,
+  1,      "Sam",    "Observer",   NA,
+  1,     "Mara", "Scorekeeper",    8,
+  1,    "Jesse",    "Observer",   NA,
+  1,      "Tom",    "Observer",   NA,
+  2,     "Mike",    "Observer",   NA,
+  2,  "Rachael",    "Observer",   NA,
+  2,  "Sydekea", "Scorekeeper",   14,
+  2, "Gabriela",    "Observer",   NA,
+  3,  "Derrick",    "Observer",   NA,
+  3,     "Kara", "Scorekeeper",    9,
+  3,    "Emily",    "Observer",   NA,
+  3, "Danielle",    "Observer",   NA
+)
+
+```
+This is how we populate those missing values
+
+```{r populate missing values using downup,echo=TRUE}
+# The values are inconsistently missing by position within the group
+# Use .direction = "downup" to fill missing values in both directions
+squirrels %>%
+  dplyr::group_by(group) %>%
+  fill(n_squirrels, .direction = "downup") %>%
+  dplyr::ungroup()
+
+# Using `.direction = "updown"` accomplishes the same goal in this example
+```
+
+Now you can practice with your own data sets. These fill() function combines perfectly with other data manipulation verbs from DPLYR package. Both TIDYR and DPLYR packages are part of the TIDYVERSE universe, meaning you can download them all as a bundle just by using library(tidyverse).
+
+Check the **TIDYVERSE** documentation from its website [Tidyverse](https://www.tidyverse.org/)
+
