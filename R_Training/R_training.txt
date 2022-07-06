@@ -1,4 +1,4 @@
-List of mateirals and training units created for NHSE Midlands System Improvement team
+List of training materials created for NHSE Midlands System Improvement team
 
 - Session 01 Intro to R and R Studio
 - Session 02 Loops
