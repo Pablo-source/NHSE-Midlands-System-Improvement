@@ -33,7 +33,7 @@ This repository will include four main file content types:
 - It breaks up graphs into semantic components such as sclaes and layers
 - Users tell ggplot2 how to map variables to asesthetics, what graphical primitives to use and the theme required for the plot
 
-## R Training /**Session 05 - TIDYR package -
+## R Training /**Session 05 - TIDYR package -**
 - This example shows how to replace missing values in a data set
 - The package allows you to arrange your data in a structured way making it easier to work 
 - You have a consistent way of referring to variables (as column names) and observations (as row indices). 
