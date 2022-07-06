@@ -1,1 +1,10 @@
-List of mateirals and training units used by the Rightcare team
+List of mateirals and training units created for NHSE Midlands System Improvement team
+
+- Session 01 Intro to R and R Studio
+- Session 02 Loops
+- Session 03 Relative paths and GGPLOT2 package
+- Session 04 TIDYR package
+
+There is also a specific folder for adhoc R Scripts produced for the team
+
+
