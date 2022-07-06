@@ -32,3 +32,10 @@ This repository will include four main file content types:
 - It is an implementation of Lenand Wilkinson's Grammar of Graphics - a general scheme for data visualization
 - It breaks up graphs into semantic components such as sclaes and layers
 - Users tell ggplot2 how to map variables to asesthetics, what graphical primitives to use and the theme required for the plot
+
+## R Training /**Session 05 - TIDYR package -
+- This example shows how to replace missing values in a data set
+- The package allows you to arrange your data in a structured way making it easier to work 
+- You have a consistent way of referring to variables (as column names) and observations (as row indices). 
+- When use tidy data and tidy tools, you spend less time worrying about how to feed the output from one function into the input of another,
+- It allows you to spend more time answering your questions about the data.
