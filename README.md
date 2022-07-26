@@ -33,9 +33,15 @@ This repository will include four main file content types:
 - It breaks up graphs into semantic components such as sclaes and layers
 - Users tell ggplot2 how to map variables to asesthetics, what graphical primitives to use and the theme required for the plot
 
+## R Training /**Session 05 - LOOPS and DPLYR package - 26/07/2022**
+- We review the standard loops and functions structures in R combining them together
+- Using them in tandem, we can produce automated PDF reports that can later on be sent out via email 
+- Dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges
+- DPLYR is part of TIDYVERSE set of packages and combines very well with GGPLOT package that we reviewed on our previous session
+
 ## R Training /**Session 05 - TIDYR package -**
 - This example shows how to replace missing values in a data set
 - The package allows you to arrange your data in a structured way making it easier to work 
-- You have a consistent way of referring to variables (as column names) and observations (as row indices). 
-- When use tidy data and tidy tools, you spend less time worrying about how to feed the output from one function into the input of another,
-- It allows you to spend more time answering your questions about the data.
+- You have a consistent way of referring to variables (as column names) and observations (as row indices)
+- When use tidy data and tidy tools, you spend less time worrying about how to feed the output from one function into the input of another
+- It allows you to spend more time answering your questions about the data
