@@ -1,0 +1,18 @@
+# DPLYR Session
+
+25/07/2022 Birmingham
+
+DPLYR is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges. 
+
+DPLYR allows us to chain different data manipulation verbs by using pipes %>%, passing the output of the previous step to the next action verb in the chain of data transformations.
+
+select() picks variables based on their names.
+filter() picks cases based on their values.
+mutate() adds new variables that are functions of existing variables
+summarise() reduces multiple values down to a single summary.
+arrange() changes the ordering of the rows.
+These all combine naturally with group_by() which allows you to perform any operation “by group”. You can learn more about them in vignette(“dplyr”).
+
+The order in which they are presented follow the general structure of a data analysis project, where first we define our business objectives, then we explore the data, using EDA techniques, after we prepare, format and cleanse the data, and later we develop our methodology to build our model and finally we validate and present the results of our whole data analysis to our audience.
+
+
