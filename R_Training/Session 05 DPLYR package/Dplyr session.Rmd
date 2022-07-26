@@ -1,0 +1,431 @@
+---
+title: "DPLYR session"
+author: "NHSE Midlands System Improvement"
+date: "25/07/2022"
+output:
+  html_document: 
+    toc: yes
+    toc_float:
+      collapsed: TRUE
+---
+
+## <span style="color:#005EB8">**DPLYR**</span> 
+
+### <span style="color:#005EB8">**DPLYR overview**</span>
+
+Dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
+
+
+## Dplyr main actions 
+
+DPLYR allows us to chain different data manipulation verbs by using pipes  %>%, passing the output of the previous step to the next action verb in the chain of data transformations. 
+
+- select() picks variables based on their names.
+- filter() picks cases based on their values.
+- mutate() adds new variables that are functions of existing variables
+- summarise() reduces multiple values down to a single summary.
+- arrange() changes the ordering of the rows.
+
+These all combine naturally with group_by() which allows you to perform any operation “by group”. You can learn more about them in vignette("dplyr"). 
+
+The order in which they are presented follow the general structure of a data analysis project, where first we define our business objectives, then we explore the data, using EDA techniques, after we prepare, format and cleanse the data, and later we develop our methodology to build our model and finally we validate and present the results of our whole data analysis to our audience.
+
+![Data Analysis project Life Cycle](Images/LifeCycleRefresh_FINAL-2.png)
+
+As well as these single-table verbs, dplyr also provides a variety of two-table verbs, which you can learn about in vignette("two-table").
+
+DPLYR package website can be found here [DPLYR](https://dplyr.tidyverse.org/), alongside with some pratical examples and [Dplyr cheat sheet](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf)
+
+<br>
+
+### DPLYR verbs
+
+We start by loading our data from the Trainsets folder. We use two packages *readr* and *here* to load the csv file into R
+
+```{r}
+library(readr)
+library(here)
+# New file "MHS data v10.csv"
+MHS_data_v10 <- read_csv(here("Trainsets","MHS data v10.csv"), 
+                        col_types = cols(ReportingDate = col_date(format = "%d/%m/%Y")))
+MHS_data_v10
+```
+## <span style="color:#005EB8">**1.Select**</span>
+
+It is good practice first to describe the total number of variables in the dataset
+
+```{r Get variable names, echo=TRUE}
+names(MHS_data_v10)
+```
+
+
+### Select is used to keep certain variables
+
+Select main use is to restrict the number of columns on your data set.
+
+The first step is to reduce the total number of variables we load from the initial csv file to focus just on those we will use for our analysis. We use **select()** verb to define how many we keep forward. 
+
+As we want to focus on Midlands region we retain Provider_Flag, OrgName, Value, OrgType, Provider name for Chart and Value.
+
+```{r Subset variables,echo=TRUE}
+library(dplyr)
+library(readr)
+library(here)
+# New file "MHS data v10.csv"
+MHS_data_v10_A <- MHS_data_v10 %>%  select(Provider_Flag, "Provider name for Chart", OrgName, value, OrgType)
+MHS_data_v10_A
+```
+
+### Select is also used to rename variables
+
+One feature of Select() function is that we can use it to rename variables while selecting them, we first assign the **new** name to the variable, followed by an equal sign and its  **previous_name**
+
+```{r Rename variables, echo=TRUE}
+MHS_data_v10B <- MHS_data_v10 %>% 
+              select(Provider_Flag, Provider = "Provider name for Chart",
+                     OrgName, MetricName,value, OrgType,)
+MHS_data_v10B
+```
+
+### Select can be used to remove specific variables
+
+One useful feature of Select verb, is that it can be used in a negative form, to remove variables from any data set. 
+
+For exmaple let's revisit MHS_data_v10B data set and check the number of variabes inclued
+
+Tip: press CTRL+ALT+I to create a new r chunck on your markdown document
+
+Let's inspect the top 10 rows and also its variable types
+
+```{r top and bottom rows,echo=TRUE}
+head(MHS_data_v10B)
+tail(MHS_data_v10B)
+```
+
+Check data frame variable types using str() function. This is one of the most used functions in R. 
+
+**str()** function in R Language is used for compactly displaying the internal structure of a R object. It can display even the internal structure of large lists which are nested. It provides one liner output for the basic R objects letting the user know about the object and its constituents
+
+```{r check variable names, echo=TRUE}
+str(MHS_data_v10B)
+```
+From this data set, we can inspect just its variable names to decide which ones to drop
+
+```{r check variables,echo=TRUE}
+names(MHS_data_v10B)
+```
+Let's say we want to remove provider flat, we use select as shown below for that
+
+```{r remove variables,echo=TRUE}
+library(dplyr)
+MHS_data_C <- MHS_data_v10B %>% 
+              select(-c(Provider_Flag))
+MHS_data_C
+```
+
+We can check we have successfully removed that vairable by re-running the previous name() command on the new data set we have just created. This time we have five variables instead of six.
+
+```{r check reaining variables,echo=TRUE}
+names(MHS_data_C)
+```
+
+## <span style="color:#005EB8">**2.Arrange**</span>
+
+In a nutshell, arrange() orders the rows of a data frame by the values of selected columns.
+
+(Arrange rows by column values)<https://dplyr.tidyverse.org/reference/arrange.html>
+
+```{r arrange by col values, echo=TRUE}
+library(dplyr)
+MHS_data_C_to_sort <- MHS_data_C %>% 
+                      select(OrgName,MetricName,value) %>% 
+                      filter(OrgName=="NHS Northumberland CCG" &
+                              MetricName == 'Trauma and orthopaedics (TFCs 110 and 214) - Outpatient - Percentage of patients discharged after their first attendance (12 months to month end)')
+MHS_data_C_to_sort
+```
+
+Now we can sort the data by value on ascending order 
+
+```{r sort ascending by value,echo=TRUE}
+MHS_data_C_ASC <- MHS_data_C_to_sort %>% 
+                  select(MetricName,value) %>% 
+                 arrange(value)
+MHS_data_C_ASC
+```
+
+We can also choose to sort it in descending order by adding the desc() parameter before the variable we want to sort **arrange(desc(value))**
+
+```{r sort in descending order by value, echo=TRUE}
+MHS_data_C_DESC <- MHS_data_C_to_sort %>% 
+                  select(MetricName,value) %>% 
+                  arrange(desc(value))
+MHS_data_C_DESC
+
+```
+
+
+
+## <span style="color:#005EB8">**3.Filter**</span>
+
+Filter is used to restrict the number of rows, by selecting specific variable values. It allows us to combine different boolean operator( AND, OR,NOT, AND NOT).
+
+### 3.1 Keep just Midlands providers
+
+In the example below, we are going to restrict our data by just one variable value, selecting from Provider_flag all data for Midlands region. Note that this data set is the one were we have previously renamed Provider variable to make it shorter.
+
+```{r filter subset rows,echo=TRUE}
+library(dplyr)
+MHS_data_v10_MIDL <- MHS_data_v10B  %>% filter(Provider_Flag == 'Midlands Provider')
+MHS_data_v10_MIDL
+```
+
+### 3.2 Select two organisations
+
+So from the above table, we choose to focus our analysis on two specific OrgNames: "NHS Berkshire West CCG" and "NHS Blackpool CCG".
+
+This example combines two booleans in the filter() function (AND and OR), this shows how to subset data from the original data set for Midlands region focusing solely on NHS Leixester City CGG and NHS Stoke on Trent CCG.
+
+```{r Apply several filters,echo=TRUE}
+Data2orgs <- MHS_data_v10 %>%
+              select(Provider_Flag, Provider = "Provider name for Chart",
+                     OrgName, MetricName, value,ReportingDate, OrgType) %>% 
+              filter (Provider_Flag == 'Midlands Provider' &
+                        ( OrgName == 'NHS Leicester City CCG' | 
+                            OrgName ==  'NHS Stoke on Trent CCG'))
+Data2orgs                  
+```
+As we have done earlier, we can check whether the selection to the Orgname has been successfully applied
+
+```{r Check filtered OrgName,echo=TRUE}
+Chk_Org_list <- Data2orgs %>% 
+                select(OrgName) %>% 
+                group_by(OrgName) %>% 
+                summarize ( freq = n()) %>% 
+                ungroup() %>% 
+                arrange(freq)
+Chk_Org_list
+```
+
+
+## <span style="color:#005EB8">**4.Mutate**</span>
+
+We use mutate in DPLYR to create new variables in our data set. Using  MHS_data_v10_MIDL data set as a reference, we will select just OrgName variable, to describe how to create a new variable using regex expressions grepl() function, that will allow us to seach on OrgName variable for specifics strings of text 'CCG','ICB' or 'TRUST'.
+
+This specific script combines mutate() with ifelse() function to combine a set of variable creation within a string of ifelse() conditions.
+
+
+```{r mutate create new vars,echo=TRUE}
+library(dplyr)
+MHSV10_ORG_TYPES <-MHS_data_v10_MIDL %>% 
+                                  select(OrgName,OrgType) %>% 
+                                  mutate(
+                                            TYPE = ifelse(grepl('CCG',OrgName),'CCG',
+                                                      (ifelse(grepl('ICB',OrgName),'ICB',
+                                                      (ifelse(grepl('Trust',OrgName),'TRUST',
+                                                      (ifelse(grepl('STP',OrgName),'STP',0)))))))
+                                        )
+MHSV10_ORG_TYPES
+```
+
+## <span style="color:#005EB8">**5. Group by and summarize**</span>
+
+To precise several of the  previuos data  manipulations steps, we are going to download a table of COVID19 metrics from JHU Github repo
+
+
+```{r 01 02 Load Covid Data from Github, echo=TRUE, eval = FALSE}
+# Function 01: Download data as .ZIP file
+DownloadCOVID <-function() {
+    # Create data directory if doesn't exist
+    if(!dir.exists("data")){dir.create("data")}
+  # Download master.zip file 
+  download.file(
+    url = "https://github.com/CSSEGISandData/COVID-19/archive/master.zip",
+    destfile = "data/covid19JH.zip"
+  )
+}
+
+DownloadCOVID()
+```
+
+```{r Unzip files to obtain CSV files, echo=TRUE, message=TRUE, warning=TRUE,eval = FALSE}
+unzip_files <-function() { data_path <- "COVID-19-master/csse_covid_19_data/csse_covid_19_time_series/"
+  
+  # Unzip covid19JH.zip file to extract .csv metric files (confirmed, deaths, recovered)
+  # time_series_covid19_confirmed_global.csv, time_series_covid19_deaths_global.csv, 
+  # time_series_covid19_recovered_global.csv
+         unzip(zipfile = "data/covid19JH.zip",
+    
+    files = paste0(data_path, c("time_series_covid19_confirmed_global.csv",
+                                "time_series_covid19_deaths_global.csv",
+                               "time_series_covid19_recovered_global.csv")),
+    exdir = "data",
+    junkpaths = T
+ )
+}
+
+unzip_files()
+```
+Now we can load the Confirmed Cases to subset UK data from it. We will use the here() library to make sure we use relative paths. We use read_csv() function to download the data: 
+
+We load flat files in R with the readr package: [read](https://r4ds.had.co.nz/data-import.html), this R for Data Science website includes a good exmplanation on how read_csv() function works. 
+
+```{r}
+Trainsets_files <- list.files("Trainsets/",".csv")
+Trainsets_files
+```
+
+
+```{r}
+all_csv_files <- list.files("data/",".csv") 
+all_csv_files
+```
+
+```{r Load Confirmed cases into R Environment,echo=FALSE}
+library(here)
+library(readr)
+
+input_covid <- list.files("data/",".csv")
+
+NFILES <- length(input_covid)
+file_Name <-c("data_confirmed","data_deceased","data_recovered")
+
+for(i in 1:NFILES) {     
+  assign(paste0(file_Name[i]),                                   # Read and store data frames
+         read_csv(paste0("data/",
+                         input_covid[i])))
+}
+
+```
+Now we can view how the data set looks like, after running the above code. 
+
+```{r downloaded .csv files,echo=TRUE}
+# Check the files we have inour Input files folder
+list.files("./data")
+
+```
+We want to keep just confirmed codi19 cases
+
+```{r}
+# keep just confimed cases
+rm(list=ls()[! ls() %in% c("data_confirmed")])
+```
+
+Check how some variables are imported by R as sometimes the original source displays variables surrounded by quotations
+
+So we can input just confirmed cases, so we download the rest of the files
+
+```{r}
+head(data_confirmed) 
+```
+
+Sometimes the original variable names from imported data can be problematic, let's re-name them by column possition, just changing two first var names in our dataframe
+
+```{r rename two cols}
+data_confirmed_prep <- data_confirmed
+
+colnames(data_confirmed_prep)[1:2] <- c("Province", "Country")
+head(data_confirmed_prep)
+
+```
+
+Now we can check the frequency of each country in the original table
+
+```{r  Create quick country list tbale,echo=TRUE}
+# Check variables at the top of the data frame
+# This allows us to create an alphabetical sorted list of countries
+library(dplyr)
+Test <- data_confirmed_prep %>% 
+                select(Country)%>%
+                group_by(Country) %>% 
+                summarize ( freq = n()) %>% 
+                ungroup() %>% 
+                arrange(desc(Country))
+Test
+```
+Now we are able to filter just UK Confirmed cases using Country variable, without having to place that country name between backticks. 
+
+We are also able to **remove** two variables (Lat, Long) from this data set. As you can see below, in this data setp we have just used two DPLYR verbs **filter** and **select**, in this instance, using **select** to **REMOVE** variables.
+
+```{r}
+library(dplyr)
+UK_confirmed <- data_confirmed_prep %>% 
+                filter(Country == "United Kingdom") %>% 
+                select(-c("Lat","Long"))
+UK_confirmed
+```
+ 
+
+ ### <span style="color:#005EB8">**5.1 Group by and summarize for UK**</span>  
+    
+ First we need to *Pivot Longer* the UK data to ensure we don't have severa days in our rows, so only one row per day is present in our data frame. This function is included in the **tidyr** package and also is part of the **Tidyverse** universe. As we only have **one** variable in our country list, we don't need to group_by this time
+ 
+Read about this [pivot_longer_function]<https://tidyr.tidyverse.org/reference/pivot_longer.html>
+
+We need first to pivot_longer then summarize results by country
+
+
+```{r}
+library(tidyr)     
+library(dplyr)
+
+UK_conf_piv <- UK_confirmed %>%
+                        pivot_longer(names_to = "date",
+                                     cols = 3:ncol(UK_confirmed),
+                                     values_to = "Confirmed") 
+
+UK_conf_piv
+```
+
+We want to sort it by date to follow the historic development of the pandemic. There is an issue as you can see because the column date is not defined as date, after we pivot_longer the data.
+ 
+```{r Pivot Longer, echo=TRUE}
+library(tidyr)     
+library(dplyr)
+UK_conf_group_by <- UK_conf_piv %>% 
+  select(Country,date,Confirmed) %>% 
+                        group_by(Country,date) %>%
+                        summarise("Confirmed" = sum(Confirmed,na.rm = T)) %>% 
+                        arrange(date)
+UK_conf_group_by
+```
+ 
+ We we will create a new variable to define date as proper **DATE** variable in R and we will discard original date variable
+ 
+```{r Create new date variable,echo=TRUE}
+library(tidyr)     
+library(dplyr)
+UK_conf_date <- UK_conf_group_by %>% 
+                mutate(DATE= as.Date(date,"%m/%d/%y")) %>% 
+                arrange(DATE)
+UK_conf_date
+```
+ Now we can keep our DATE variable and plot the results
+ 
+ 
+```{r Tidy data set and Plot resutls, echo=TRUE}
+library(tidyr)     
+library(dplyr)
+UK_conf_PLOT <- UK_conf_date %>% 
+                select(Country,DATE,Confirmed) %>% 
+                arrange(DATE) 
+UK_conf_PLOT
+```
+Finally, after all these data manipulation steps, we are able to obtain a data set ready to produce our final plot
+ 
+```{r Plot template, echo=TRUE}
+library(tidyverse)
+# UK_conf_PLOT
+UK_recovered_plot <-  ggplot(UK_conf_PLOT, aes(x=DATE, y=Confirmed)) + 
+                      geom_line(aes(colour=Country), size =1) +
+                      ggtitle("UK COVID19 confirmed cases. 2019-2022")
+UK_recovered_plot
+```
+ 
+
+ 
+
+
+
+```
+
+
