@@ -37,7 +37,7 @@ This repository will include four main file content types:
 - We review the standard loops and functions structures in R combining them together
 - Using them in tandem, we can produce automated PDF reports that can later on be sent out via email 
 - Dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges
-- DPLYR is part of TIDYVERSE set of packages and combines very well with GGPLOT package that we reviewed on our previous session
+- DPLYR is part of TIDYVERSE set of packages and combines very well with GGPLOT package that we reviewed in our previous session
 
 ## R Training /**Session 05 - TIDYR package -**
 - This example shows how to replace missing values in a data set
