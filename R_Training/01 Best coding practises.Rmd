@@ -1,0 +1,159 @@
+---
+title: "R best coding practices"
+author: "PLR"
+date: "`r format(Sys.time(),'%d %B, %Y')`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    toc_collapsed: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Best coding practices
+
+As a closing session to my amazing secondment experience with the NHS Midlands team, I would like to collate a set of standardised procedures that have helped me to write better R code and to hand over my projects to R developers in the team.
+
+These are a set of topics I consider to be important for both beginners and experienced R analysts
+
+- 1. Setup your work based on projects
+- 2. Organize your input and outputs around relative paths to your project
+- 3. Import Excel files into R using Janitor package  
+- 4. Create functions to automate reports done in Excel
+- 5. Always check how your scripts use your computer resources by using PROVFIS  package
+- 6. Use Git or Github to apply version control on any ongoing script created by several developers 
+- 7. Create your own documentation in Markdown and get used to share and review it among all team members
+- 8. Run continuous code optimisation: Code once, re-use in the form of functions or even build your own packages for adhoc reports. Then make this packages available for the whole NHS R community.
+- 9. Share your code as much as possible from your Github or Git repositories
+
+### 1. Setup your work based on projects
+
+An R project enables your work to be bundled in a portable, self-contained folder. Within the project, all the relevant scripts, data files, figures/outputs, and history are stored in sub-folders and importantly - the working directory is the project’s root folder.
+
+Read this website below to learn more about project oriented workflows:
+
+**Project oriented workflows** <https://rstats.wtf/project-oriented-workflow.html>
+
+#### 1.1 Use functions to setup project folder structures
+
+One of the first steps in producing a reproducible workflow in a team, is to create the same set of folder across project. This is a template useful to organise any type of project, that can be tailored depending on the specific aim of the project. 
+
+```{r Setup your folder structure, echo=TRUE}
+library(here)
+
+here::i_am("00 Project folder setup.R")
+
+# 01 Create folder structure making use of HERE package 
+project_folder_setup <-function(){
+  
+  if(!dir.exists("Data")){dir.create(here::here("Data"))}
+  if(!dir.exists("Markdown")){dir.create(here::here("Markdown"))}
+  if(!dir.exists("Functions")){dir.create(here::here("Functions"))}
+  if(!dir.exists("Test")){dir.create(here::here("Test"))}
+  if(!dir.exists("Report")){dir.create(here::here("Report"))}
+  if(!dir.exists("Model")){dir.create(here::here("Model"))}
+  
+}
+# Execute function
+project_folder_setup()
+```
+
+### 2. Organize your input and outputs around relative paths 
+
+Always start working on a project thinking about relative paths. You want to use relative paths to run your script in any machine by any developer. You will unlearn the use of setwd() and getwd() functions, as they tend to make people use absolute paths. Instead I recommend you to learn about the multiple applications of the here() package.
+
+Now that we see how useful here() function can be let's use it to write in and wrote out  .csv data
+
+```{r Create some dummy data, echo=TRUE}
+# Create a dummy data set
+
+Indic <-c(replicate(2,"Knee Replacement"),
+             replicate(2,"Hip Replacement"),
+             replicate(2,"Falls and fractures"))
+Org <- c(replicate(2,"NHS Northumberland CCG"),
+            replicate(2,"NHS Northumberland CCG"),
+            replicate(2,"NHS Northumberland CCG"))
+Value <-c(rnorm(3))
+# Create for each Indicators two rows one for Org value and another for national value
+Scope <- c(replicate(6,c("Org","national")))
+
+Mydata <-cbind.data.frame(Indic,Org,Value,Scope)
+Mydata
+```
+We are going to write the newly created Mydata data set into our Data folder we have created when setting up our folder structure. 
+
+```{r Write in and out files using here package, echo=TRUE}
+# First we load here package
+library(here)
+
+# I assume that you work always using PROJECTS, so the here library writes file path relative to your project folder
+# a) Save output in a sub_folder of your main project folder directory
+# Saving .csv file in a directory sub_folder called "data"
+# /data
+write.csv(Mydata,here("data","Mydata_transformed.csv"), row.names = TRUE)
+
+# b) Save output in a deeper sub_folder of your main project folder directory
+# /data/sample/
+
+write.csv(Mydata,here("data","sample","Mydata_transformed.csv"), row.names = TRUE)
+
+# In the same way, we can read in the file we have exported into R using the same logic
+
+# Read in (.csv) file using here()
+read_in_test  <-read.table(here("Data", "Mydata.csv"),
+                           header =TRUE, sep =',',stringsAsFactors =TRUE)
+read_in_test
+```
+
+These are some useful online resources to learn about the here package
+* **Here library** <https://here.r-lib.org/>.
+
+#### 2.1 Some useful applications of Here library 
+
+* a. Get your reference directory 
+
+```{r}
+here::i_am("01 Best coding practises.Rmd")
+library(here)
+```
+* b. Write out paths to input and output files
+
+As we have just seen, we can use here() library to write relative paths when bringin in data into R or writting out some results
+
+### 3. Import Excel files into R using Janitor package  
+
+When importing data into R from Excel some NHS data sets have long and winded columns names. It is important to tidy them up before starting any data processing. This is why we import Excel files using readxl package and also janitor to obtain consistent variables as column names from Excel. This will ease early data wrangling steps and also that we work across project with same set of variable names.  
+
+```{r Import Excel files using readxl and janitor libraries, echo=TRUE}
+library(readxl)
+library(here)
+library(dplyr)
+library(janitor)
+
+Path <- here()
+Path
+
+# Original Excel file "WTL-Data-202021-(20220526)-v1.13.xlsx", saved in data folder
+# in our R Project
+
+# Step 01 02: read_excel() function from readxl package
+# Step 02 02: import  data by using clean_names() function from janitor() package
+
+# Monthly Hospital Activity Data
+# https://www.england.nhs.uk/statistics/statistical-work-areas/hospital-activity/monthly-hospital-activity/mar-data/
+# Source: NHS England and NHS Improvement: monthly RTT data collection
+# April 2007 to June 2022
+
+# Consultant-led Referral to Treatment Waiting times Data 2022-23
+Referrals_data <- read_excel(here("data", "RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx"), sheet = 1) %>% 
+                  clean_names()
+Referrals_data
+```
+```{r Check clean names,echo=TRUE}
+# We can see how Janitor package using clean_names() provides a good start to work with our downloaded NHS data sets
+names(Referrals_data)
+```
+
