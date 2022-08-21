@@ -326,19 +326,19 @@ Scope &lt;- c(replicate(6,c(&quot;Org&quot;,&quot;national&quot;)))
 
 Mydata &lt;-cbind.data.frame(Indic,Org,Value,Scope)
 Mydata</code></pre>
-<pre><code>##                  Indic                    Org      Value    Scope
-## 1     Knee Replacement NHS Northumberland CCG -0.2751351      Org
-## 2     Knee Replacement NHS Northumberland CCG  0.6789405 national
-## 3      Hip Replacement NHS Northumberland CCG -0.1483257      Org
-## 4      Hip Replacement NHS Northumberland CCG -0.2751351 national
-## 5  Falls and fractures NHS Northumberland CCG  0.6789405      Org
-## 6  Falls and fractures NHS Northumberland CCG -0.1483257 national
-## 7     Knee Replacement NHS Northumberland CCG -0.2751351      Org
-## 8     Knee Replacement NHS Northumberland CCG  0.6789405 national
-## 9      Hip Replacement NHS Northumberland CCG -0.1483257      Org
-## 10     Hip Replacement NHS Northumberland CCG -0.2751351 national
-## 11 Falls and fractures NHS Northumberland CCG  0.6789405      Org
-## 12 Falls and fractures NHS Northumberland CCG -0.1483257 national</code></pre>
+<pre><code>##                  Indic                    Org       Value    Scope
+## 1     Knee Replacement NHS Northumberland CCG  1.19244630      Org
+## 2     Knee Replacement NHS Northumberland CCG -0.09465199 national
+## 3      Hip Replacement NHS Northumberland CCG  0.56829134      Org
+## 4      Hip Replacement NHS Northumberland CCG  1.19244630 national
+## 5  Falls and fractures NHS Northumberland CCG -0.09465199      Org
+## 6  Falls and fractures NHS Northumberland CCG  0.56829134 national
+## 7     Knee Replacement NHS Northumberland CCG  1.19244630      Org
+## 8     Knee Replacement NHS Northumberland CCG -0.09465199 national
+## 9      Hip Replacement NHS Northumberland CCG  0.56829134      Org
+## 10     Hip Replacement NHS Northumberland CCG  1.19244630 national
+## 11 Falls and fractures NHS Northumberland CCG -0.09465199      Org
+## 12 Falls and fractures NHS Northumberland CCG  0.56829134 national</code></pre>
 <p>We are going to write the newly created Mydata data set into our Data folder we have created when setting up our folder structure.</p>
 <pre class="r"><code># First we load here package
 library(here)
@@ -392,9 +392,9 @@ read_in_test</code></pre>
 <p>As we have just seen, we can use here() library to write relative paths when bringin in data into R or writting out some results</p>
 </div>
 </div>
-<div id="import-excel-files-into-r-using-janitor-package" class="section level3">
-<h3>3. Import Excel files into R using Janitor package</h3>
-<p>When importing data into R from Excel some NHS data sets have long and winded columns names. It is important to tidy them up before starting any data processing. This is why we import Excel files using readxl package and also janitor to obtain consistent variables as column names from Excel. This will ease early data wrangling steps and also that we work across project with same set of variable names.</p>
+<div id="import-excel-files-into-r-using-readxl-and-janitor-packages" class="section level3">
+<h3>3. Import Excel files into R using readxl and Janitor packages</h3>
+<p>When importing data into R from Excel some NHS data sets have long and winded columns names. It is important to tidy them up before starting any data processing. This is why we import Excel files using <strong>readxl</strong> and <strong>janitor</strong> packages to obtain consistent variables names from Excel. The <strong>readxl</strong> package allows us to import Excel file, controlling with parts and sections of the Excel file we ingest into R and <strong>janitor</strong> library provides a consistent naming convention for columns. This will ease early data wrangling steps and also that we work across project with same set of variable names.</p>
 <pre class="r"><code>library(readxl)
 library(here)
 library(dplyr)</code></pre>
@@ -417,18 +417,14 @@ Path</code></pre>
 <pre><code>## [1] &quot;/home/pablo/Documents/Pablo_Desktop/R_warehouse/R_Secondment/Adhoc R scripts/Secondment scripts&quot;</code></pre>
 <pre class="r"><code># Original Excel file &quot;WTL-Data-202021-(20220526)-v1.13.xlsx&quot;, saved in data folder
 # in our R Project
-
 # Step 01 02: read_excel() function from readxl package
-# Step 02 02: import  data by using clean_names() function from janitor() package
-
 # Monthly Hospital Activity Data
 # https://www.england.nhs.uk/statistics/statistical-work-areas/hospital-activity/monthly-hospital-activity/mar-data/
 # Source: NHS England and NHS Improvement: monthly RTT data collection
 # April 2007 to June 2022
 
 # Consultant-led Referral to Treatment Waiting times Data 2022-23
-Referrals_data &lt;- read_excel(here(&quot;data&quot;, &quot;RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx&quot;), sheet = 1) %&gt;% 
-                  clean_names()</code></pre>
+Referrals_data &lt;- read_excel(here(&quot;data&quot;, &quot;RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx&quot;), sheet = 1)</code></pre>
 <pre><code>## New names:
 ## • `` -&gt; `...3`
 ## • `` -&gt; `...4`
@@ -458,52 +454,158 @@ Referrals_data &lt;- read_excel(here(&quot;data&quot;, &quot;RTT-Overview-Timese
 ## • `` -&gt; `...28`</code></pre>
 <pre class="r"><code>Referrals_data</code></pre>
 <pre><code>## # A tibble: 210 × 28
-##    title  referral_to_tre… x3    x4    x5    x6    x7    x8    x9    x10   x11  
-##    &lt;chr&gt;  &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
-##  1 &lt;NA&gt;   &lt;NA&gt;             &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
-##  2 Perio… April 2007 to J… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
-##  3 Sourc… NHS England and… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
-##  4 Basis: Commissioner     &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
-##  5 Conta… england.rtt@nhs… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
-##  6 &lt;NA&gt;   &lt;NA&gt;             &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
-##  7 Year   Month            Inco… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
-##  8 &lt;NA&gt;   &lt;NA&gt;             Medi… 92nd… No. … % wi… No. … No. … % &gt; … No. … Tota…
-##  9 2007/… 39173            -     -     -     -     -     -     -     -     -    
-## 10 &lt;NA&gt;   39203            -     -     -     -     -     -     -     -     -    
-## # … with 200 more rows, and 17 more variables: x12 &lt;chr&gt;, x13 &lt;chr&gt;, x14 &lt;chr&gt;,
-## #   x15 &lt;chr&gt;, x16 &lt;chr&gt;, x17 &lt;chr&gt;, x18 &lt;chr&gt;, x19 &lt;chr&gt;, x20 &lt;chr&gt;,
-## #   x21 &lt;chr&gt;, x22 &lt;chr&gt;, x23 &lt;lgl&gt;, x24 &lt;chr&gt;, x25 &lt;chr&gt;, x26 &lt;chr&gt;,
-## #   x27 &lt;chr&gt;, x28 &lt;chr&gt;</code></pre>
-<pre class="r"><code># We can see how Janitor package using clean_names() provides a good start to work with our downloaded NHS data sets
-names(Referrals_data)</code></pre>
-<pre><code>##  [1] &quot;title&quot;                                          
-##  [2] &quot;referral_to_treatment_rtt_waiting_times_england&quot;
-##  [3] &quot;x3&quot;                                             
-##  [4] &quot;x4&quot;                                             
-##  [5] &quot;x5&quot;                                             
-##  [6] &quot;x6&quot;                                             
-##  [7] &quot;x7&quot;                                             
-##  [8] &quot;x8&quot;                                             
-##  [9] &quot;x9&quot;                                             
-## [10] &quot;x10&quot;                                            
-## [11] &quot;x11&quot;                                            
-## [12] &quot;x12&quot;                                            
-## [13] &quot;x13&quot;                                            
-## [14] &quot;x14&quot;                                            
-## [15] &quot;x15&quot;                                            
-## [16] &quot;x16&quot;                                            
-## [17] &quot;x17&quot;                                            
-## [18] &quot;x18&quot;                                            
-## [19] &quot;x19&quot;                                            
-## [20] &quot;x20&quot;                                            
-## [21] &quot;x21&quot;                                            
-## [22] &quot;x22&quot;                                            
-## [23] &quot;x23&quot;                                            
-## [24] &quot;x24&quot;                                            
-## [25] &quot;x25&quot;                                            
-## [26] &quot;x26&quot;                                            
-## [27] &quot;x27&quot;                                            
-## [28] &quot;x28&quot;</code></pre>
+##    `Title:` `Referral to Treat…` ...3  ...4  ...5  ...6  ...7  ...8  ...9  ...10
+##    &lt;chr&gt;    &lt;chr&gt;                &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+##  1 &lt;NA&gt;     &lt;NA&gt;                 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  2 Period:  April 2007 to June … &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  3 Source:  NHS England and NHS… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  4 Basis:   Commissioner         &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  5 Contact: england.rtt@nhs.net  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  6 &lt;NA&gt;     &lt;NA&gt;                 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  7 Year     Month                Inco… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  8 &lt;NA&gt;     &lt;NA&gt;                 Medi… 92nd… No. … % wi… No. … No. … % &gt; … No. …
+##  9 2007/08  39173                -     -     -     -     -     -     -     -    
+## 10 &lt;NA&gt;     39203                -     -     -     -     -     -     -     -    
+## # … with 200 more rows, and 18 more variables: ...11 &lt;chr&gt;, ...12 &lt;chr&gt;,
+## #   ...13 &lt;chr&gt;, ...14 &lt;chr&gt;, ...15 &lt;chr&gt;, ...16 &lt;chr&gt;, ...17 &lt;chr&gt;,
+## #   ...18 &lt;chr&gt;, ...19 &lt;chr&gt;, ...20 &lt;chr&gt;, ...21 &lt;chr&gt;, ...22 &lt;chr&gt;,
+## #   ...23 &lt;lgl&gt;, ...24 &lt;chr&gt;, ...25 &lt;chr&gt;, ...26 &lt;chr&gt;, ...27 &lt;chr&gt;,
+## #   ...28 &lt;chr&gt;</code></pre>
+<p>As we can see the data structure of the input data set is not clear and column names are not arranged as our original Excel input file.</p>
+<div id="choose-which-sheet-to-import" class="section level4">
+<h4>3.1 Choose which sheet to import</h4>
+<p>We use sheet command to choose which of the total number of sheet we want to import. In this instance it is just sheet one as we have one tab</p>
+<p>This <strong>sheet</strong> command goes after a comma next to the full path section to the Excel file</p>
+<pre class="r"><code>library(here)
+Myexcel &lt;- read_excel(here(&quot;data&quot;,&quot;RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx&quot;), sheet =1 )</code></pre>
+<pre><code>## New names:
+## • `` -&gt; `...3`
+## • `` -&gt; `...4`
+## • `` -&gt; `...5`
+## • `` -&gt; `...6`
+## • `` -&gt; `...7`
+## • `` -&gt; `...8`
+## • `` -&gt; `...9`
+## • `` -&gt; `...10`
+## • `` -&gt; `...11`
+## • `` -&gt; `...12`
+## • `` -&gt; `...13`
+## • `` -&gt; `...14`
+## • `` -&gt; `...15`
+## • `` -&gt; `...16`
+## • `` -&gt; `...17`
+## • `` -&gt; `...18`
+## • `` -&gt; `...19`
+## • `` -&gt; `...20`
+## • `` -&gt; `...21`
+## • `` -&gt; `...22`
+## • `` -&gt; `...23`
+## • `` -&gt; `...24`
+## • `` -&gt; `...25`
+## • `` -&gt; `...26`
+## • `` -&gt; `...27`
+## • `` -&gt; `...28`</code></pre>
+<p>We still have an issue with <em>empty</em> rows being displayed in our R input file. We need to fix this in the next section</p>
+<p>** List first number of sheet using excel_sheets()</p>
+<p>Fist we need to decide which of the several sheets in the Excel file we are interested in importing into R It is good practise to list first the sheet names to decide which one we pick for our analysis</p>
+<pre class="r"><code>excel_sheets(&#39;./data/RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx&#39;)</code></pre>
+<pre><code>## [1] &quot;Full Time Series&quot;</code></pre>
+<p>In this instance, we can see that we have got just one Sheet in our Excel file</p>
+</div>
+<div id="omit-empty-rows-above-the-target-table" class="section level4">
+<h4>3.2 Omit empty rows above the target table</h4>
+<p>It is common that these Excel files include several rows explanations about the data displayed on the table. When importing this table into R we want to skip those lines and start reading data into R from the Table itself. In our example using <strong>RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx</strong> file we see that our data starts on row 10, so we need to specify it to the read_excel function</p>
+<pre class="r"><code>library(here)
+Myexcel &lt;- read_excel(here(&quot;data&quot;,&quot;RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx&quot;), sheet =1,skip=9 )</code></pre>
+<pre><code>## New names:
+## • `` -&gt; `...1`
+## • `` -&gt; `...2`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...3`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...5`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...8`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...12`
+## • `95th percentile (weeks)` -&gt; `95th percentile (weeks)...13`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...14`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...15`
+## • `No. of pathways (all)` -&gt; `No. of pathways (all)...16`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...17`
+## • `95th percentile (weeks)` -&gt; `95th percentile (weeks)...18`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...19`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...20`
+## • `No. of pathways (all)` -&gt; `No. of pathways (all)...21`
+## • `` -&gt; `...23`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...24`
+## • `95th percentile (weeks)` -&gt; `95th percentile (weeks)...25`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...26`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...27`
+## • `No. of pathways (all)` -&gt; `No. of pathways (all)...28`</code></pre>
+<p>Now we can see how the data has been imported by the variable names displayed as columns doesn’t show a consistent naming convention. This is why we need to use always <strong>clean_names()</strong> function from janitor library in combination with <strong>read_excel()</strong> function</p>
+<pre class="r"><code># Step 02 02: import  data by using clean_names() function from janitor() package 
+library(here)
+library(janitor)
+Myexcel_clean &lt;- read_excel(here(&quot;data&quot;,&quot;RTT-Overview-Timeseries-Jun22-XLS-77K-68395.xlsx&quot;), sheet =1,skip=9 ) %&gt;% 
+                 clean_names()</code></pre>
+<pre><code>## New names:
+## • `` -&gt; `...1`
+## • `` -&gt; `...2`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...3`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...5`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...8`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...12`
+## • `95th percentile (weeks)` -&gt; `95th percentile (weeks)...13`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...14`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...15`
+## • `No. of pathways (all)` -&gt; `No. of pathways (all)...16`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...17`
+## • `95th percentile (weeks)` -&gt; `95th percentile (weeks)...18`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...19`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...20`
+## • `No. of pathways (all)` -&gt; `No. of pathways (all)...21`
+## • `` -&gt; `...23`
+## • `Median wait (weeks)` -&gt; `Median wait (weeks)...24`
+## • `95th percentile (weeks)` -&gt; `95th percentile (weeks)...25`
+## • `No. within 18 weeks` -&gt; `No. within 18 weeks...26`
+## • `No. &gt; 52 weeks` -&gt; `No. &gt; 52 weeks...27`
+## • `No. of pathways (all)` -&gt; `No. of pathways (all)...28`</code></pre>
+<pre class="r"><code>Myexcel_clean                 </code></pre>
+<pre><code>## # A tibble: 202 × 28
+##    x1     x2                  median_wait_wee… x92nd_percentil… no_within_18_we…
+##    &lt;chr&gt;  &lt;dttm&gt;              &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;           
+##  1 2007/… 2007-04-01 00:00:00 -                -                -               
+##  2 &lt;NA&gt;   2007-05-01 00:00:00 -                -                -               
+##  3 &lt;NA&gt;   2007-06-01 00:00:00 -                -                -               
+##  4 &lt;NA&gt;   2007-07-01 00:00:00 -                -                -               
+##  5 &lt;NA&gt;   2007-08-01 00:00:00 14.287783185098… 52+              2395656         
+##  6 &lt;NA&gt;   2007-09-01 00:00:00 13.354009517397… 52+              2364349         
+##  7 &lt;NA&gt;   2007-10-01 00:00:00 13.154119977713… 52+              2337604         
+##  8 &lt;NA&gt;   2007-11-01 00:00:00 13.326543200113… 52+              2269968         
+##  9 &lt;NA&gt;   2007-12-01 00:00:00 14.282357862916… 52+              2173205         
+## 10 &lt;NA&gt;   2008-01-01 00:00:00 12.278634851466… 52+              2151167         
+## # … with 192 more rows, and 23 more variables: percent_within_18_weeks &lt;chr&gt;,
+## #   no_18_weeks &lt;chr&gt;, no_52_weeks_8 &lt;chr&gt;, percent_52_weeks &lt;chr&gt;,
+## #   no_104_weeks &lt;chr&gt;, total_waiting_mil &lt;chr&gt;, median_wait_weeks_12 &lt;dbl&gt;,
+## #   x95th_percentile_weeks_13 &lt;chr&gt;, no_within_18_weeks_14 &lt;dbl&gt;,
+## #   no_52_weeks_15 &lt;dbl&gt;, no_of_pathways_all_16 &lt;dbl&gt;,
+## #   median_wait_weeks_17 &lt;chr&gt;, x95th_percentile_weeks_18 &lt;chr&gt;,
+## #   no_within_18_weeks_19 &lt;chr&gt;, no_52_weeks_20 &lt;chr&gt;, …</code></pre>
+<p>Now we have some type of structure that will allows us to carry on our Exploratory analysis, and the variables have consistent names that we can start to rename in a sistematic way. But at this point we have done some pre-processing of the Excel input file that will help us in later stages of our analysis.</p>
+<p>This is the set of variables we have now in our R session</p>
+<pre class="r"><code>names(Myexcel_clean)</code></pre>
+<pre><code>##  [1] &quot;x1&quot;                        &quot;x2&quot;                       
+##  [3] &quot;median_wait_weeks_3&quot;       &quot;x92nd_percentile_weeks&quot;   
+##  [5] &quot;no_within_18_weeks_5&quot;      &quot;percent_within_18_weeks&quot;  
+##  [7] &quot;no_18_weeks&quot;               &quot;no_52_weeks_8&quot;            
+##  [9] &quot;percent_52_weeks&quot;          &quot;no_104_weeks&quot;             
+## [11] &quot;total_waiting_mil&quot;         &quot;median_wait_weeks_12&quot;     
+## [13] &quot;x95th_percentile_weeks_13&quot; &quot;no_within_18_weeks_14&quot;    
+## [15] &quot;no_52_weeks_15&quot;            &quot;no_of_pathways_all_16&quot;    
+## [17] &quot;median_wait_weeks_17&quot;      &quot;x95th_percentile_weeks_18&quot;
+## [19] &quot;no_within_18_weeks_19&quot;     &quot;no_52_weeks_20&quot;           
+## [21] &quot;no_of_pathways_all_21&quot;     &quot;no_of_new_rtt_periods&quot;    
+## [23] &quot;x23&quot;                       &quot;median_wait_weeks_24&quot;     
+## [25] &quot;x95th_percentile_weeks_25&quot; &quot;no_within_18_weeks_26&quot;    
+## [27] &quot;no_52_weeks_27&quot;            &quot;no_of_pathways_all_28&quot;</code></pre>
+</div>
 </div>
 </div>
 
