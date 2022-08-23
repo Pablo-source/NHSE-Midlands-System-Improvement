@@ -39,9 +39,17 @@ This repository will include four main file content types:
 - Dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges
 - DPLYR is part of TIDYVERSE set of packages and combines very well with GGPLOT package that we reviewed in our previous session
 
-## R Training /**Session 05 - TIDYR package -**
+## R Training /**Session 06 - TIDYR package -**
 - This example shows how to replace missing values in a data set
 - The package allows you to arrange your data in a structured way making it easier to work 
 - You have a consistent way of referring to variables (as column names) and observations (as row indices)
 - When use tidy data and tidy tools, you spend less time worrying about how to feed the output from one function into the input of another
 - It allows you to spend more time answering your questions about the data
+
+## R Training /**Session 07 - Shiny dashboards - 24/08/2022**
+- Learn interactive web applications design principles in R
+- Design a shiny app components UI, SERVER
+- Create reactive elements between UI and SERVER components
+- Build your shiny app based on Inputs and Outputs
+<https://shiny.rstudio.com/gallery>
+<https://shiny.rstudio.com/>
