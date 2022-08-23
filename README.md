@@ -51,5 +51,5 @@ This repository will include four main file content types:
 - Design a shiny app components UI, SERVER
 - Create reactive elements between UI and SERVER components
 - Build your shiny app based on Inputs and Outputs
-<https://shiny.rstudio.com/gallery>
-<https://shiny.rstudio.com/>
+- [Gallery] <https://shiny.rstudio.com/gallery>
+- [Shiny website] <https://shiny.rstudio.com/>
