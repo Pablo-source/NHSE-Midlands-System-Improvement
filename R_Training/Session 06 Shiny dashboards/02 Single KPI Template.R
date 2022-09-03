@@ -2,6 +2,7 @@
 # 02 Single KPI Template.R
 
 # AIM: create a KPI in a shiny app with one single KPI at the top.
+# KPI: All pathways admitted patients
 
 library(shiny)
 library(shinydashboard)
@@ -49,7 +50,7 @@ server <- function(input,output) {
           data_kpi_01
         # We want to create a KPI figure including thousands separator (using big.mark)
      valueBox(paste0(format(data_kpi_01$Adm_allpath, big.mark = ','))
-    , "Admitted within 52 weeks", icon = icon("bar-chart-o"),color = "green") 
+    , "All pathways admitted", icon = icon("bar-chart-o"),color = "green") 
   })                     
   
 }
