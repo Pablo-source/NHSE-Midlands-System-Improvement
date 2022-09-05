@@ -1,0 +1,307 @@
+---
+title: "LEAFLET maps ni R"
+author: "NHSE Midlands System Improvement"
+date: "04/09/2022"
+output:
+  html_document: 
+    toc: yes
+    toc_float:
+      collapsed: TRUE
+---
+
+
+## <span style="color:#005EB8">**Interactive maps in R**</span> 
+
+This tutorial will cover the basic steps required to build interactive LEAFLET maps in R. To include them in Shiny apps and view them from a web browser. 
+
+Basic Leaflet principles can be learnt from this website [leaflet] <https://rstudio.github.io/leaflet/>
+
+Leaflet is one of the most popular open-source JavaScript libraries for interactive maps. It’s used by websites ranging from The New York Times and The Washington Post to GitHub and Flickr, as well as GIS specialists like OpenStreetMap, Mapbox, and CartoDB.
+
+
+### <span style="color:#005EB8">**Steps to build an interactive map**</span>
+
+We follow the following steps to build an interactive map:
+
+- 1.Obtain  CCG shapefiles
+- 2.Download shapefile from this website: <https://geoportal.statistics.gov.uk/>
+- 3.Unzip  file in your project folder
+- 4.Load required libraries
+- 5.Use SF library to load Shapefile into R 
+- 6.Plot shape file using GGPLOT2
+- 7.Import indicators data from  Excel file (using readxl library ) Plot shapefile using GGPLOT2
+- 8.Select just relevant variables
+- 9.Merge Shapefile and data files 
+- 10.Keep just merged file on your workspace
+- 11.From merged map file, subset one indicator to plot
+- 12.	Define projection for the map 
+- 13.	Draw maps including polygons to plot indicators
+
+
+
+#### <span style="color:#005EB8">**1.Obtain  CCG shapefiles**</span>
+
+
+Obtain CCG shape files from the Open Geography portal
+
+The Open Geography portal from the Office for National Statistics (ONS) provides free and open access to the definitive source of geographic products, web applications, story maps, services and APIs. All content is available under the Open Government Licence v3.0, except where otherwise stated.
+
+[Geoportal]<https://geoportal.statistics.gov.uk>
+
+In the search window type "Clinical Commissioning Groups (April 2021)"
+
+```{r}
+library(here)
+here()
+```
+
+
+
+![CCG shapefiles](Images/01 CCG April 2011 search box.png)
+
+This is the Type of Shapefile we are interested in 
+
+![CCG shapefiles download](Images/02 Health boundaries.png)
+
+
+#### <span style="color:#005EB8">**2.Download shapefile**</span>
+
+
+Locate CCG shapfile in the website
+
+![Locate CCG shapefiles download](Images/03 CCG locate shapefile.png)
+
+Clinical Commissioning Groups (April 2021) EN BFC
+
+https://geoportal.statistics.gov.uk/datasets/ons::clinical-commissioning-groups-april-2021-en-bfc/explore?location=51.618736%2C-1.719363%2C7.00
+
+[CCG Shapefile download]<https://geoportal.statistics.gov.uk/datasets/ons::clinical-commissioning-groups-april-2021-en-bfc/explore?location=51.618736%2C-1.719363%2C7.00>
+ 
+
+We then  download the shapefile option:
+
+![Download CCG file](Images/04 Download Shapefile.png)
+
+
+
+#### <span style="color:#005EB8">**3.Unzip  file in project folder**</span>
+
+Once we have downloaded the CCG shapefile, then unzip it on the shape files folder we would have created earlier. 
+
+![Unzip shapefile](Images/06 Unzip Shapefile.png)
+
+The shape file format distributes its information along multiple files with the same name but different extensions. In order to use the data inside a shape file you need **all** those files, not just the one ended in .shp.
+
+
+
+#### <span style="color:#005EB8">**4.Load required libraries**</span>
+
+Now we need to load required libraries for both manipulating data and shap files and also crate the interactive plot
+
+```{r Load libraries to creae map,echo=FALSE}
+library(sf)
+library(here)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library(janitor)
+here()
+```
+
+
+
+#### <span style="color:#005EB8">**5.Use SF library to load Shape file into R**</span> 
+
+Check Shape file data structure and plot a map using ggplot to ensure the shapefile works in your setup
+
+```{r describe shapefiles in Shapefiles project folder,echo=TRUE}
+here("Shapefiles")
+list.files(here("Shapefiles"))
+```
+
+
+```{r read in shapefile,echo=TRUE}
+library(sf)
+library(here)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library(janitor)
+
+here()
+
+CCG_boundaries <- st_read(here("Shapefiles","CCG_APR_2021_EN_BFC.shp"))
+
+CCG_boundaries
+```
+This is a way of checking we have a MULTYPOLYGON loaded to plot the map
+
+
+#### <span style="color:#005EB8">**6.Plot shape file using GGPLOT2**</span>
+
+We should see the CCG map displayed in R when running the code below
+
+```{r Plot shapefile,echo=TRUE}
+GGC_map <- ggplot() +
+geom_sf(data = CCG_boundaries, size = 0.5, color = "black", fill ="coral") +
+ggtitle("CCG Boundaries plot. April 2021") +
+coord_sf()
+GGC_map
+ggsave(paste0("CCG Boundaries April 2021_coral",".jpeg"),width = 30, height = 20, dpi = 150, units = "cm")
+```
+
+
+
+#### <span style="color:#005EB8">**7.Import indicators data from  Excel file (using readxl library ) Plot shapefile using GGPLOT2**</span>
+
+We can download several indicators from Digital website to be plotted in our map:
+
+The indicators aim to provide clear, comparative information for Clinical Commissioning Groups (CCGs) and Health and Wellbeing Boards (HWBs) about the quality of health services commissioned by CCGs and, as far as possible, the associated health outcomes.
+
+[CCG indicators]<https://digital.nhs.uk/data-and-information/publications/statistical/ccg-outcomes-indicator-set/october-2020>
+
+As an example for this workbook, we will download **1-2-under-75-mortality-from-cardiovascular-disease** indicator for this exercise 
+
+[https://digital.nhs.uk/data-and-information/publications/statistical/ccg-outcomes-indicator-set/october-2020/domain-1-preventing-people-from-dying-prematurely-ccg/1-2-under-75-mortality-from-cardiovascular-disease]
+
+[Download indicator]<https://files.digital.nhs.uk/1D/E71528/CCG_1_2_I00754_D.csv>
+
+We will save this .csv file into a new "Data" folder within our project directory
+
+#### <span style="color:#005EB8">**8.Select just relevant variables**</span>
+
+```{r load indicators into R, echo=TRUE}
+library(readxl)
+library(janitor)
+Metrics <- read_excel(here("Data", "CCG_1_2_I00754_D.xls"), sheet = 3,skip = 17) %>%
+  clean_names()
+Metrics
+```
+We subset this initial metrics data set
+
+```{r Subset data,echo=TRUE}
+Metrics_sub <- Metrics %>% 
+               select(reporting_period,breakdown,indicator_value,ons_code)
+Metrics_sub
+```
+
+
+#### <span style="color:#005EB8">**9.Merge Shapefile and data files**</span> 
+
+Now that we have both the Shapefile and indicator data loaded into R, we must merge them to obtain a single file to be used in the map. 
+
+From the Shapefile file, we will use **CCG21CD** variable to merge it with **ons_code** fromt the indicators file to obtain the final map file. 
+
+```{r Rename first shapefile and indicator variables so they match,echo=TRUE}
+# 1-2. Shapefile
+# File name: CCG_boundaries
+# Variable used to perform merge: CCG21CD
+# 2-2. Indicators
+# File name: Metrics_sub
+# Variable used to perform merge: ons_code (rename it as CCG21CD)
+names(CCG_boundaries)
+
+Metrics_sub_ren <- Metrics %>% 
+               select(reporting_period,
+                      breakdown,
+                      indicator_value,
+                      CCG21CD = ons_code)
+Metrics_sub_ren
+names(Metrics_sub_ren)
+```
+
+Identify data sets used in the final merge
+
+```{r rename variables,echo=TRUE}
+CCG_boundaries_MAP <- CCG_boundaries
+Metrics_sub_ren_MAP <- Metrics_sub_ren
+```
+We use DPLYR to perform the merge 
+
+```{r merge data sets for map,echo=TRUE}
+# NOW WE CAN JOIN BOTH DATA SETS BY CCG21CD
+# mapdata <- join(CCG_boundaries_MAP, Metrics_sub, by="CCG21CD") #merge the two datasets
+# using DPLYR to make the marge
+# We use a left join from DPLYR package to add to CCG boundaries indicators variables from Metrics_sel_MAP dataframe
+library(dplyr)
+
+mapdata <- left_join(CCG_boundaries_MAP, Metrics_sub_ren_MAP, by = "CCG21CD")
+
+```
+
+
+#### <span style="color:#005EB8">**10.Subset one indicator to plot**</span>
+
+In case we had several indicators in our metrics data set, we could subset one to be used in the map. As we have just one indicator we will use that one **1-2-under-75-mortality-from-cardiovascular-disease** in the map. 
+
+#### <span style="color:#005EB8">**11.Define map projection**</span> 
+
+The projection that has been tested and yields good results is a combination of **"+proj=longlat"** and  **"+datum=WGS84"** when using the st_transform() function from sf package on the merged shapefile and metrics file called **mapdata**
+
+This is the right projection setup that allows us to create a map quickly: 
+
+*MAPDATA<- st_transform(mapdata,"+proj=longlat", "+datum=WGS84")*
+
+
+```{r Appply a projection to the map}
+MAPDATA <- st_transform(mapdata,"+proj=longlat", "+datum=WGS84")
+```
+
+
+#### <span style="color:#005EB8">**12.Draw maps including polygons to plot indicators**</span>
+
+In order for the map to work, we will need to  create first a colour palette so the metric will have distinc hues of colour based on its continuous value.
+
+```{r Setup colour palette for map, echo=TRUE}
+
+ # Create a continuous palette function
+library(leaflet)
+pal <- colorNumeric(palette = "Blues",domain = MAPDATA$indicator_value)
+```
+
+#### <span style="color:#005EB8">**13.Keep just merged file on your workspace**</span>
+
+```{r keep just merged data for map,echo=TRUE}
+# KEEP JUST mapdata
+rm(list=ls()[! ls() %in% c("MAPDATA")])
+```
+
+#### <span style="color:#005EB8">**14.Plot map**</span>
+
+This is a minimum map version, excluding legend
+
+```{r Now we can draw our map}
+Leafmap_min <- MAPDATA %>% 
+                leaflet() %>%  
+                addTiles() %>% 
+                addPolygons(stroke = TRUE,smoothFactor = 0.2, fillOpacity = 1,color = ~pal(indicator_value),
+                # Highlight plygons upon mouseover
+                highlight = highlightOptions(weight = 3,fillOpacity = 0,
+                                                 color = "black",opacity = 1.0,
+                                                 bringToFront = TRUE,sendToBack = TRUE)) %>% 
+                    setView(lng = -2, lat = 54, zoom = 5) %>% 
+                    # Include LEGEND
+                    addLegend("topright", pal = pal, values = ~indicator_value,title = "under-75-mortality-from-cardiovascular-disease",opacity = 1)
+Leaf_map
+```
+
+This map below has got a leveng on the top right corner of the map
+
+```{r Now we can draw our map}
+Leaf_map <- MAPDATA %>% 
+                leaflet() %>%  
+                addTiles() %>% 
+                addPolygons(stroke = TRUE,smoothFactor = 0.2, fillOpacity = 1,color = ~pal(indicator_value),
+                # Highlight plygons upon mouseover
+                highlight = highlightOptions(weight = 3,fillOpacity = 0,
+                                                 color = "black",opacity = 1.0,
+                                                 bringToFront = TRUE,sendToBack = TRUE)) %>% 
+                    setView(lng = -2, lat = 54, zoom = 5) %>% 
+                    # Include LEGEND
+                    addLegend("topright", pal = pal, values = ~indicator_value,title = "under-75-mortality-from-cardiovascular-disease",opacity = 1)
+Leaf_map
+```
+
+
+
+
