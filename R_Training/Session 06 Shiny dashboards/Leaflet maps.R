@@ -35,10 +35,11 @@ Metrics
 
 
 Metrics_sub <- Metrics %>% 
-               select(reporting_period,breakdown,indicator_value,ons_code)
+               select(reporting_period,breakdown,indicator_value,ons_code) %>% 
+               filter(reporting_period =="2019")
 Metrics_sub
 
-Metrics_sub_ren <- Metrics %>% 
+Metrics_sub_ren <- Metrics_sub %>% 
                     select(reporting_period,
                            breakdown,
                            indicator_value,
@@ -57,9 +58,10 @@ mapdata <- left_join(CCG_boundaries_MAP, Metrics_sub_ren_MAP, by = "CCG21CD")
 MAPDATA <- st_transform(mapdata,"+proj=longlat", "+datum=WGS84")
 
 library(leaflet)
+
 pal <- colorNumeric(palette = "Blues",domain = MAPDATA$indicator_value)
 
-rm(list=ls()[! ls() %in% c("MAPDATA")])
+rm(list=ls()[! ls() %in% c("MAPDATA","pal")])
 
 Leafmap_min <- MAPDATA %>% 
                    leaflet() %>%  
@@ -76,7 +78,7 @@ Leafmap_min <- MAPDATA %>%
                         addLegend("topright", pal = pal, values = ~indicator_value,title = "under-75-mortality-from-cardiovascular-disease",opacity = 1)
 Leafmap_min
 
-
+# Interactive map is displayed in the Viewer section of the R studio Pane
 
 
 
