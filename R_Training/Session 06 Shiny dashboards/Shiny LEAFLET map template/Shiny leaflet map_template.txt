@@ -1,0 +1,3 @@
+This is a folder containing all required components to plot a LEAFLET map in a Shiny dashboard. 
+
+This LEAFLET Shiny example can be replicated with the existing data sources used in the rest of Shiny R Sccripts in this folder. As the plot is based on CCG the method described here is also applicable to any data sources, such as the RTT data used in the Shiny App tutorial.
