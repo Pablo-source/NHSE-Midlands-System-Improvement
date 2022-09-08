@@ -1,0 +1,1 @@
+These are just the set of images used to produce the Markdown document as an interacive HTML file with a side navigation menu  describing step by step how to build a LEAFLET map from scratch
