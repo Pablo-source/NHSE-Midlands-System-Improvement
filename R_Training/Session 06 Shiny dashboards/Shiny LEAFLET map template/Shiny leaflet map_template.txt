@@ -1,3 +1,21 @@
 This is a folder containing all required components to plot a LEAFLET map in a Shiny dashboard. 
 
 This LEAFLET Shiny example can be replicated with the existing data sources used in the rest of Shiny R Sccripts in this folder. As the plot is based on CCG the method described here is also applicable to any data sources, such as the RTT data used in the Shiny App tutorial.
+
+Based on NHS publicly available **CCG Indicators** we choose one specific metric to be displayed in a map as a learning exercise.
+
+Downloaded file is **CCG_1_2_I00754_D.csv** and we plot "under-75-mortality-from-cardiovascular-disease.csv" in our CCG map. 
+
+We choose to structure this LEAFLET map project into the following set of folders:
+
+-**Data**: This folder includes the **indicators** we have downloaded from NHS website
+-**Images**: This is a folder just containing images used to illustrate the markdown document for the step by step process
+-**Shapefiles**: This is a ipmortant folder, as we download **Open Geography Portal** the set of files required to plot NHS CCG shapefiles in the map
+
+Finally, it is important to mention that we provide to set of files for this LEAFLLET Section: 
+
+- a) **Markdown** document: Leaflet maps in R.Rmd, so students can download it and produce the HTML file to study the detailed instructions at their own pace using any web browser
+
+- b) **Leaflet maps.R** document: This is the summary of the R scripts that can be copied across to any Shiny app to ensure it will produce an **interactive** map using **LEAFLET**
+
+The latest script is the one student can try to replicate with the remaining scripts in this Repo to produce their own LEAFLET interactive map for teir own Shiny app
