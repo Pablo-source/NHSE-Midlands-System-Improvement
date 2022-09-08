@@ -1,0 +1,5 @@
+This folder includes both the Markdown documents and Isolides presentation used to create the slide pack for this training.
+Learning materials for this section are provided both as HTML interactive markdown documents and slides created using ioslides framework. 
+I have also included a template on how to use .css files within Isolides presentations.
+Feel free to tweak and change its content to experiment with it
+- It is highly recommended to apply all font and text colour to your slides from  a .css file to gain better control on the feel and look of your final presentation
