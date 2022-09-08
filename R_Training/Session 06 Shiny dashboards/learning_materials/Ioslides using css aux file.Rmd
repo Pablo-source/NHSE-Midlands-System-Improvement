@@ -1,0 +1,42 @@
+---
+title: "Isoslides template"
+author: "PLR pablo.leonrodenas@nhs.net"
+date: "22/03/2022"
+output: ioslides_presentation
+css: styles.css
+incremental: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Session 1. Introduction {.smaller}
+
+## Session content{.smaller}
+
+- **1.Accessing the data**
+  - This section will cover how to import data from Excel and CSV files into R,also how to connect to SQL databases  using ODBC and RDB packages. 
+- **2.Summarizing data**
+  - We will explore several Exploratory Data Analysis (EDA) methods to assess the analysis techniques we  can apply to our data
+- **3.Exporting data**
+  - Different ways of exporting the data into CSV and Excel
+- **4.Data visualization using GGPLOT2**
+  - Using GGPLOT2 package to build plots in R.  This is a framework in R designed to build graphics in layers, by adding different components to the plot once step at a time. The ggplot2 package allow users to improve the quality and aesthetics of the graphics we produce.
+- **5.Markdown Language**
+  - Markdown is a lightweight markup language that you can use to add formatting elements to plaintext text documents. 
+
+## Next Steps {#nextsteps .emphasized}
+
+We use RStudio as the premiered IDE to create analytical products in R. Advantages of this tool: 
+- Combine console, file explorer, code editor and environment into a single window. 
+- Debug code and profile shiny apps
+- Create different workspaces for different projects
+- Integrate code development with Git and Github for version control and team project work
+
+## New slide with css applied {#usingcss .emphasized}
+
+Using specific .css files with your Isolides design allows you:
+- Gain control over color and size of your text
+- Override default slide title size and color
