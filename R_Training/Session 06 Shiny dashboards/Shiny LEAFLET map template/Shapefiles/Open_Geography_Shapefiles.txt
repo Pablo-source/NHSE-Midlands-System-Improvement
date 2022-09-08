@@ -1,0 +1,1 @@
+This folder includes the required cartographic information to draw the map. We use the collection of files for NHS CCG's in England, corresponding to April 2011 CCG Shapefiles information
