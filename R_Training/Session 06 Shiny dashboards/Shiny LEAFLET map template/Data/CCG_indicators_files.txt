@@ -1,1 +1,1 @@
-Included in this section new set of CCG indicators to be plot in a LEAFLET map
+Included in this section new set of CCG indicators to be plot in a LEAFLET map, we include both CSV and Excel files: "CCG_1_2_I00754_D.xls" and "CCG_1_2_I00754_D.csv", although the example uses the Excel file to get the required data for the map. We find plenty of times indicators data both in .csv and Excel files, it is straight forward to handle and clean them in R using some extra data minpulation steps.  
