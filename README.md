@@ -49,7 +49,12 @@ This repository will include four main file content types:
 - [Gallery] <https://shiny.rstudio.com/gallery>
 - [Shiny website] <https://shiny.rstudio.com/>
 
-## R Training /**Session 06 - TIDYR package -**
+## R Training /**Session 07 - Shiny dashboards review - 20/09/2022**
+- Build Leaflet interactive maps into Shiny app 
+- Create function to download NHS indicators as zipped files from NHS websited (RTT,NHS111) using HTML tags
+- Create static maps using GGPLOT2 package
+
+## R Training /**Session 08- TIDYR package -**
 - This example shows how to replace missing values in a data set
 - The package allows you to arrange your data in a structured way making it easier to work 
 - You have a consistent way of referring to variables (as column names) and observations (as row indices)
