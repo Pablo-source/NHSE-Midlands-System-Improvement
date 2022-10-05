@@ -210,8 +210,6 @@ RH_diagnostics_report <-function(DataC,NetworkC,WeekC) {
 # Run up to this line to load ALL THREE functions
 
 # INVOKE FUNCTIONS
-# TAB 01/03: High Level Summary
-# Previously: HLS_diagnostics_report("ME1_20220925.xlsx","ME1_20220925.xlsx","ME1_20220925.xlsx")
 
 # Assign total number in Input_files folder to an object
 Input_files <- list.files('Input_files')
