@@ -1,3 +1,7 @@
+![R](https://img.shields.io/badge/r-%23276DC3.svg?style=for-the-badge&logo=r&logoColor=white)
+![GitHub all releases](https://img.shields.io/github/downloads/Pablo-source/NHSE-Midlands-System-Improvement/total?label=Downloads&style=flat-square)
+![GitHub language count](https://img.shields.io/github/languages/count/Pablo-source/NHSE-Midlands-System-Improvement)
+
 # NHSE Midlands System Improvement
 R  training session materials for NHSE Midlands System Improvement team
 
