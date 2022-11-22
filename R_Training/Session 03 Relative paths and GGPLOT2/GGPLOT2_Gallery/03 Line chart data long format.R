@@ -28,10 +28,9 @@ names(Goodslg)
 # Plot
 PLOT01 <-ggplot(data = Goodslg, aes( x = Date, y = value, group = Trade, colour = Trade)) + 
          geom_line() +
-         labs(title ="UK Goods trade OBR March 2022 report")
+         labs(title ="UK Goods trade OBR March 2022 report",
+              subtitle = "Multiple colour line chart by data series")
 PLOT01
 
 ggsave(paste0("UK Goods trade OBR March 2022 report",".jpeg"),width = 30, height = 20, dpi = 150, units = "cm")
 
-# ADD a SHADOWED AREA
-# From 1st Janyary 2021 onwards (Post-transition period)
