@@ -1,0 +1,92 @@
+---
+title: "GGPLOT2 features - Add vertical line to dates axis"
+author: "PLR"
+date: '2022-10-09'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Add a vertical geom vline to date axis
+
+R Script to add a vertical line to a plot containing date variables on the X axis. We use geom_vline() geom in GGPLOT2 to add vertical lines to a plot. 
+
+Reference: <https://stackoverflow.com/questions/5388832/how-to-get-a-vertical-geom-vline-to-an-x-axis-of-class-date>
+
+```{r Vertical line geom_vline date_a}
+library("ggplot2")
+
+tmp <- data.frame(x=rep(seq(as.Date(0, origin="1970-01-01"),length=36, by="1 month"), 2),
+                  y=rnorm(72),category=gl(2,36))
+
+p <- ggplot(tmp, aes(x, y, colour=category)) +
+     geom_line() +
+     geom_vline(xintercept=as.numeric(tmp$x[c(13, 24)]),
+                linetype=4, colour="black")
+print(p)
+```
+
+We need to define **as.numeric** the date values on the X axis where we want the vertical X axis line to be displayed.
+
+### Flag dates based on X axis position 
+
+We can change the parameters for date. The problem with this methos is that is difficult to match the date variable for a specific day with the X coordinates we introduce in the xintercept() function.
+
+```{r Vertical line geom_vline date_b}
+library("ggplot2")
+
+tmp <- data.frame(x=rep(seq(as.Date(0, origin="1970-01-01"),length=36, by="1 month"), 2),
+                  y=rnorm(72),category=gl(2,36))
+
+p1 <- ggplot(tmp, aes(x, y, colour=category)) +
+     geom_line() +
+     geom_vline(xintercept=as.numeric(tmp$x[c(20, 31)]),
+                linetype=4, colour="black")
+print(p1)
+```
+
+### 1. Preferred method using dates to draw geom_vline
+
+In the same Stack Overflow post, there is a comment that sugest using 'geom_vline(xintercept = as.numeric(as.Date("1972-01-01")),linetype =4) as a method to draw vertical lines using specific date values
+
+Take a look to the initial date range in the data set
+
+```{r Look for dates, echo=TRUE}
+head(tmp)
+```
+
+From the same website above, we can introduce as.Date() function within the geom_vline() statement. To draw lines on specific dates
+
+```{r Vertical lines on specific day date}
+library("ggplot2")
+
+tmp <- data.frame(x=rep(seq(as.Date(0, origin="1970-01-01"),length=36, by="1 month"), 2),
+                  y=rnorm(72),category=gl(2,36))
+
+p2 <- ggplot(tmp, aes(x, y, colour=category)) +
+     geom_line() +
+     geom_vline(xintercept = as.numeric(as.Date("1972-01-01")), linetype=4)
+print(p2)
+```
+
+### 2. Add context highlighting 1970s recession
+
+We are going to take as an example the 1970s recession that lasted from 1973-1975 in the United Kingdom. As this is a test plot, the data is just for learning purposes.
+
+```{r Vertical lines 1970 uk recession}
+library("ggplot2")
+
+tmp <- data.frame(x=rep(seq(as.Date(0, origin="1970-01-01"),length=72, by="1 month"), 2),
+                  y=rnorm(144),category=gl(2,72))
+
+p3 <- ggplot(tmp, aes(x, y, colour=category)) +
+     geom_line() +
+  # Recession starts 1973
+     geom_vline(xintercept = as.numeric(as.Date("1973-01-01")), linetype=4) +
+  # Recession end 1975
+    geom_vline(xintercept = as.numeric(as.Date("1975-12-31")), linetype=4)
+
+print(p3)
+```
